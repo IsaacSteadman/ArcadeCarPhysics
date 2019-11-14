@@ -13,6 +13,9 @@ public class ArcadeCar : MonoBehaviour
 
     const float wheelWidth = 0.085f;
 
+    int gKey = 0;
+    int hKey = 0;
+
 
     public class WheelData
     {
@@ -256,7 +259,12 @@ public class ArcadeCar : MonoBehaviour
 
 
         style.normal.textColor = Color.red;
-
+        if (!Input.gyro.enabled)
+        {
+            Input.gyro.enabled = true;
+        }
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 12;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass;
     }
@@ -421,6 +429,30 @@ public class ArcadeCar : MonoBehaviour
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
         //Debug.Log (string.Format ("H = {0}", h));
+
+        if (Input.GetKey(KeyCode.G))
+        {
+            gKey = (gKey + 1) % Math.Max(2, Application.targetFrameRate);
+            if (gKey == 1)
+            {
+                Application.targetFrameRate = Math.Max(1, Application.targetFrameRate - 1);
+            }
+        } else
+        {
+            gKey = 0;
+        }
+        if (Input.GetKey(KeyCode.H))
+        {
+            hKey = (hKey + 1) % Math.Max(2, Application.targetFrameRate);
+            if (hKey == 1)
+            {
+                Application.targetFrameRate = Math.Min(120, Application.targetFrameRate + 1);
+            }
+        }
+        else
+        {
+            hKey = 0;
+        }
 
         if (!controllable)
         {
