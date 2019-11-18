@@ -426,9 +426,21 @@ public class ArcadeCar : MonoBehaviour
 
     void UpdateInput()
     {
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
+        //float v = Input.GetAxis("Vertical");
+        //float h = Input.GetAxis("Horizontal");
         //Debug.Log (string.Format ("H = {0}", h));
+        float h = (Input.gyro.attitude.z - 0.5f)*40;
+        Touch[] myTouches = Input.touches;
+        float v = 0;
+        for(int i = 0; i < Input.touchCount; i++)
+        {
+            Debug.Log(myTouches[i].position);
+            if(myTouches[i].position.x > 500){
+                v += 0.5f;
+            }else{
+                v -= 0.5f;
+            }
+        }
 
         if (Input.GetKey(KeyCode.G))
         {
@@ -474,7 +486,7 @@ public class ArcadeCar : MonoBehaviour
             int numHits = Physics.RaycastNonAlloc(resetRay, resetRayHits, 250.0f);
 
             if (numHits > 0)
-            {                
+            {
                 float nearestDistance = float.MaxValue;
                 for (int j = 0; j < numHits; j++)
                 {
@@ -583,7 +595,8 @@ public class ArcadeCar : MonoBehaviour
 
             newSteerAngle = Mathf.Min(Math.Abs(newSteerAngle), steerLimit) * sgn;
 
-            axles[0].steerAngle = newSteerAngle;
+            //axles[0].steerAngle = newSteerAngle;
+            axles[0].steerAngle = h;
         }
         else
         {
@@ -968,7 +981,7 @@ public class ArcadeCar : MonoBehaviour
         wheelData.debugText = wheelData.compression.ToString("F2");
 
         // Hooke's law (springs)
-        // F = -k x 
+        // F = -k x
 
         // Spring force (try to reset compression from spring)
         float springForce = wheelData.compression * -axle.stiffness;
@@ -994,7 +1007,7 @@ public class ArcadeCar : MonoBehaviour
         // Calculate friction forces
         //
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// 
+        ///
 
         Vector3 wheelVelocity = rb.GetPointVelocity(wheelData.touchPoint.point);
 
@@ -1054,7 +1067,7 @@ public class ArcadeCar : MonoBehaviour
         // Simulate perfect static friction
         Vector3 frictionForce = -slidingForce * laterialFriction;
 
-        // Remove friction along roll-direction of wheel 
+        // Remove friction along roll-direction of wheel
         Vector3 longitudinalForce = Vector3.Dot(frictionForce, c_fwd) * c_fwd;
 
         // Apply braking force or rolling resistance force or nothing
@@ -1211,7 +1224,7 @@ public class ArcadeCar : MonoBehaviour
         float rotationCenterOffsetL = axleSeparation / Mathf.Tan(frontAxle.steerAngle * Mathf.Deg2Rad);
 
         // Now we have another 2 cathet's (rotationCenterOffsetR and axleSeparation for second wheel)
-        //  need to find right angle 
+        //  need to find right angle
         float rotationCenterOffsetR = rotationCenterOffsetL - wheelsSeparation;
 
         float rightWheelYaw = Mathf.Atan(axleSeparation / rotationCenterOffsetR);
