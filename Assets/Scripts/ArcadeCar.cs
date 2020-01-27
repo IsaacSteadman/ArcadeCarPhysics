@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 
 
@@ -12,7 +12,6 @@ public class ArcadeCar : MonoBehaviour
     const int WHEEL_RIGHT_INDEX = 1;
 
     const float wheelWidth = 0.085f;
-
 
     public class WheelData
     {
@@ -224,8 +223,21 @@ public class ArcadeCar : MonoBehaviour
     float accelerationForceMagnitude = 0.0f;
     Rigidbody rb = null;
 
+    //================code===================================================================
+    bool startGame = false;
+    bool startRace = false;
+    bool arrowsDisabled = false;
+    public float time;
+    List<float> scoreBoard = new List<float>();
+    //======================================================================================
+
     // UI style for debug render
     static GUIStyle style = new GUIStyle();
+
+    //======================================================================================
+    static GUIStyle timerStyle = new GUIStyle();
+    static GUIStyle countdownStyle = new GUIStyle();
+    //======================================================================================
 
     // For alloc-free raycasts
     Ray wheelRay = new Ray();
@@ -235,6 +247,7 @@ public class ArcadeCar : MonoBehaviour
     void Reset(Vector3 position)
     {
         position += new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f), 0.0f, UnityEngine.Random.Range(-1.0f, 1.0f));
+
         float yaw = transform.eulerAngles.y + UnityEngine.Random.Range(-10.0f, 10.0f);
 
         transform.position = position;
@@ -256,6 +269,12 @@ public class ArcadeCar : MonoBehaviour
 
 
         style.normal.textColor = Color.red;
+        //=====================code====================================================
+        timerStyle.normal.textColor = Color.white;
+        timerStyle.fontSize = 20;
+        countdownStyle.normal.textColor = Color.white;
+        countdownStyle.fontSize = 50;
+        //=========================================================================
 
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass;
@@ -416,6 +435,23 @@ public class ArcadeCar : MonoBehaviour
         return limitDegrees;
     }
 
+    //======================code=============================================
+    float bestScore()
+    {
+        float dummy = 9999999999;
+        if (scoreBoard.Count != 0)
+        {
+            foreach (var x in scoreBoard)
+            {
+                if (x < dummy) dummy = x;
+            }
+            return dummy;
+        }
+        else return -1;
+    }
+    String countdownTime = "";
+    //====================================================================
+
     void UpdateInput()
     {
         float v = Input.GetAxis("Vertical");
@@ -430,6 +466,13 @@ public class ArcadeCar : MonoBehaviour
 
         if (Input.GetKey(KeyCode.R) && controllable)
         {
+            //====================code========================================
+            time = 0;
+            startGame = false;
+            startRace = false;
+            scoreBoard.Clear();
+            //============================================================
+
             Debug.Log("Reset pressed");
             Ray resetRay = new Ray();
 
@@ -475,6 +518,25 @@ public class ArcadeCar : MonoBehaviour
             }
         }
 
+        //=====================code=================================================================
+
+        bool startPressed = Input.GetKey(KeyCode.S) && controllable;
+        bool finishPressed = Input.GetKey(KeyCode.F) && controllable;
+
+        if (startPressed)
+        {
+            time = 0;
+            startGame = true;
+        }
+        if (finishPressed)
+        {
+            startGame = false;
+            startRace = false;
+            float bestScr = bestScore();
+            if (bestScr == -1 || time < bestScr) countdownTime = "HIGH SCORE!";
+            scoreBoard.Add(time);
+        }
+        //======================================================================================
 
         bool isBrakeNow = false;
         bool isHandBrakeNow = Input.GetKey(KeyCode.Space) && controllable;
@@ -699,6 +761,35 @@ public class ArcadeCar : MonoBehaviour
     }
 
 
+    //===============================code===============================================================
+    public float getTime()
+    {
+        time += Time.deltaTime;
+        return time;
+    }
+    public String formatTime(float time)
+    {
+        if (time == -1) return "N/A";
+        else
+        {
+            var minutes = time / 60; //Divide the guiTime by sixty to get the minutes.
+            var seconds = time % 60;//Use the euclidean division for the seconds.
+            var fraction = (time * 100) % 100;
+            String stringTime = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+            return stringTime;
+        }
+    }
+
+    String doCountdown()
+    {
+        int count = (int)(5 - (time/2));
+        time += Time.deltaTime;
+        if (count == 1) return "Go!!";
+        else return (count-1).ToString();
+    }
+
+    //==============================================================================================
+
     void OnGUI()
     {
         if (!controllable)
@@ -707,7 +798,29 @@ public class ArcadeCar : MonoBehaviour
         }
 
         float speed = GetSpeed();
+
+        //======================================code=======================================================
+        String formattedTime ="";
+        if (startGame & !startRace)
+        {
+            countdownTime = doCountdown();
+            formattedTime = "";
+        }
+        if (countdownTime == "-1")
+        {
+            time = 0;
+            startRace = true;
+            countdownTime = "";
+        }
+        if (startRace) formattedTime = formatTime(getTime());
+        //================================================================================================
         float speedKmH = speed * 3.6f;
+
+        //=======================================code=======================================================
+        GUI.Label(new Rect(850.0f, 50.0f, 150, 130), "Lap Time: " + formattedTime, timerStyle);
+        GUI.Label(new Rect(850.0f, 500.0f, 200, 200), countdownTime, countdownStyle);
+        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore()), timerStyle);
+        //====================================================================================================
         GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
 
         GUI.Label(new Rect(30.0f, 40.0f, 150, 130), string.Format("{0:F2} {1:F2} {2:F2}", afterFlightSlipperyTiresTime, brakeSlipperyTiresTime, handBrakeSlipperyTiresTime), style);
