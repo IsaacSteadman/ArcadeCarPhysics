@@ -16,6 +16,9 @@ public class ArcadeCar : MonoBehaviour
     int gKey = 0;
     int hKey = 0;
 
+    //=========================================================
+    //bool finishPressed = false;
+    //========================================================
 
     public class WheelData
     {
@@ -605,7 +608,7 @@ public class ArcadeCar : MonoBehaviour
         //=====================code=================================================================
 
         bool startPressed = Input.GetKey(KeyCode.S) && controllable;
-        bool finishPressed = Input.GetKey(KeyCode.F) && controllable;
+        bool finishPressed = FINISH_LINE_FLAG;// = Input.GetKey(KeyCode.F) && controllable;
 
         if (startPressed)
         {
@@ -882,7 +885,7 @@ public class ArcadeCar : MonoBehaviour
         if (FINISH_LINE_FLAG)
         {
             GUI.Label(new Rect(200.0f, 200.0f, 500, 500), string.Format("FINISH"), style);
-
+            controlsDisabled = true;
         }
 
         if (!controllable)
