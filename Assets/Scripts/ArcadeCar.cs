@@ -1,13 +1,13 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 
 
 public class ArcadeCar : MonoBehaviour
 {
 
-
+    bool FINISH_LINE_FLAG = false;
     const int WHEEL_LEFT_INDEX = 0;
     const int WHEEL_RIGHT_INDEX = 1;
 
@@ -227,13 +227,53 @@ public class ArcadeCar : MonoBehaviour
     float accelerationForceMagnitude = 0.0f;
     Rigidbody rb = null;
 
+    //================code===================================================================
+    bool startGame = false;
+    bool startRace = false;
+    bool controlsDisabled = false;
+    public float time;
+    List<float> scoreBoard = new List<float>();
+    //======================================================================================
+
     // UI style for debug render
     static GUIStyle style = new GUIStyle();
+
+    //======================================================================================
+    static GUIStyle timerStyle = new GUIStyle();
+    static GUIStyle countdownStyle = new GUIStyle();
+    //======================================================================================
 
     // For alloc-free raycasts
     Ray wheelRay = new Ray();
     RaycastHit[] wheelRayHits = new RaycastHit[16];
 
+    //===================FINISH_LINE_STUFF============================================================
+    void WheelDataPrint()
+    {
+        for (int axleIndex = 0; axleIndex < axles.Length; axleIndex++)
+        {
+            Axle axle = axles[axleIndex];
+            Debug.Log("LEFT WHEEL STUFF");
+            Debug.Log("Left Wheel Position X:" + axle.wheelVisualLeft.transform.position.x);
+            Debug.Log("Left Wheel Position Y:" + axle.wheelVisualLeft.transform.position.y);
+            Debug.Log("Left Wheel Position Z:" + axle.wheelVisualLeft.transform.position.z);
+
+            Debug.Log("=======================================================");
+
+            Debug.Log("RIGHT WHEEL STUFF");
+            Debug.Log("Right Wheel Position X:" + axle.wheelVisualRight.transform.position.x);
+            Debug.Log("Right Wheel Position Y:" + axle.wheelVisualRight.transform.position.y);
+            Debug.Log("Right Wheel Position Z:" + axle.wheelVisualRight.transform.position.z);
+            //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);    
+
+            if ((axle.wheelVisualLeft.transform.position.z < -205) && (axle.wheelVisualRight.transform.position.z < -205))
+            {
+                Debug.Log("PLACE MESSAGE HERE");
+                FINISH_LINE_FLAG = true;
+            }
+        }
+    }
+    //==================================================================================================
 
     void Reset(Vector3 position)
     {
@@ -259,6 +299,14 @@ public class ArcadeCar : MonoBehaviour
 
 
         style.normal.textColor = Color.red;
+
+        //=====================code====================================================
+        timerStyle.normal.textColor = Color.white;
+        timerStyle.fontSize = 20;
+        countdownStyle.normal.textColor = Color.white;
+        countdownStyle.fontSize = 50;
+        //=========================================================================
+
         if (!Input.gyro.enabled)
         {
             Input.gyro.enabled = true;
@@ -424,24 +472,48 @@ public class ArcadeCar : MonoBehaviour
         return limitDegrees;
     }
 
+    //======================code=============================================
+    float bestScore()
+    {
+        float dummy = 9999999999;
+        if (scoreBoard.Count != 0)
+        {
+            foreach (var x in scoreBoard)
+            {
+                if (x < dummy) dummy = x;
+            }
+            return dummy;
+        }
+        else return -1;
+    }
+    String countdownTime = "";
+    //====================================================================
+
+
     void UpdateInput()
     {
-        //float v = Input.GetAxis("Vertical");
-        //float h = Input.GetAxis("Horizontal");
-        //Debug.Log (string.Format ("H = {0}", h));
-        float h = (Input.gyro.attitude.z - 0.5f)*40;
-        Touch[] myTouches = Input.touches;
-        float v = 0;
-        for(int i = 0; i < Input.touchCount; i++)
-        {
-            Debug.Log(myTouches[i].position);
-            if(myTouches[i].position.x > 500){
-                v += 0.5f;
-            }else{
-                v -= 0.5f;
-            }
-        }
+        float v = 0;// = Input.GetAxis("Vertical");
+        float h = 0;//= Input.GetAxis("Horizontal");
 
+        if (controlsDisabled == false)
+        {
+            v = Input.GetAxis("Vertical");
+            h = Input.GetAxis("Horizontal");
+            //Debug.Log (string.Format ("H = {0}", h));
+            //float h = Input.acceleration.x*12;
+
+            Touch[] myTouches = Input.touches;
+            //float v = 0;
+            //for(int i = 0; i < Input.touchCount; i++)
+            //{
+            //    Debug.Log(myTouches[i].position);
+            //    if(myTouches[i].position.x > 500){
+            //        v += 0.5f;
+            //    }else{
+            //        v -= 0.5f;
+            //    }
+            //}
+        }
         if (Input.GetKey(KeyCode.G))
         {
             gKey = (gKey + 1) % Math.Max(2, Application.targetFrameRate);
@@ -449,7 +521,8 @@ public class ArcadeCar : MonoBehaviour
             {
                 Application.targetFrameRate = Math.Max(1, Application.targetFrameRate - 1);
             }
-        } else
+        }
+        else
         {
             gKey = 0;
         }
@@ -474,6 +547,15 @@ public class ArcadeCar : MonoBehaviour
 
         if (Input.GetKey(KeyCode.R) && controllable)
         {
+
+            //====================code========================================
+            time = 0;
+            startGame = false;
+            startRace = false;
+            scoreBoard.Clear();
+            //============================================================
+
+
             Debug.Log("Reset pressed");
             Ray resetRay = new Ray();
 
@@ -512,13 +594,33 @@ public class ArcadeCar : MonoBehaviour
                 nearestDistance -= 4.0f;
                 Vector3 resetPos = resetRay.origin + resetRay.direction * nearestDistance;
                 Reset(resetPos);
-            } else
+            }
+            else
             {
                 // Hard reset
                 Reset(new Vector3(-69.48f, 5.25f, 132.71f));
             }
         }
 
+        //=====================code=================================================================
+
+        bool startPressed = Input.GetKey(KeyCode.S) && controllable;
+        bool finishPressed = Input.GetKey(KeyCode.F) && controllable;
+
+        if (startPressed)
+        {
+            time = 0;
+            startGame = true;
+        }
+        if (finishPressed)
+        {
+            startGame = false;
+            startRace = false;
+            float bestScr = bestScore();
+            if (bestScr == -1 || time < bestScr) countdownTime = "HIGH SCORE!";
+            scoreBoard.Add(time);
+        }
+        //======================================================================================
 
         bool isBrakeNow = false;
         bool isHandBrakeNow = Input.GetKey(KeyCode.Space) && controllable;
@@ -595,8 +697,8 @@ public class ArcadeCar : MonoBehaviour
 
             newSteerAngle = Mathf.Min(Math.Abs(newSteerAngle), steerLimit) * sgn;
 
-            //axles[0].steerAngle = newSteerAngle;
-            axles[0].steerAngle = h;
+            axles[0].steerAngle = newSteerAngle;
+            //axles[0].steerAngle = h;
         }
         else
         {
@@ -622,6 +724,7 @@ public class ArcadeCar : MonoBehaviour
     void Update()
     {
         ApplyVisual();
+        WheelDataPrint();
     }
 
     void FixedUpdate()
@@ -697,7 +800,8 @@ public class ArcadeCar : MonoBehaviour
 
             // in flight roll stabilization
             rb.AddTorque(axis * flightStabilizationForce * mass);
-        } else
+        }
+        else
         {
             // downforce
             Vector3 carDown = transform.TransformDirection(new Vector3(0.0f, -1.0f, 0.0f));
@@ -743,16 +847,77 @@ public class ArcadeCar : MonoBehaviour
 
     }
 
+    //===============================code===============================================================
+    public float getTime()
+    {
+        time += Time.deltaTime;
+        return time;
+    }
+    public String formatTime(float time)
+    {
+        if (time == -1) return "N/A";
+        else
+        {
+            var minutes = time / 60; //Divide the guiTime by sixty to get the minutes.
+            var seconds = time % 60;//Use the euclidean division for the seconds.
+            var fraction = (time * 100) % 100;
+            String stringTime = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+            return stringTime;
+        }
+    }
+
+    String doCountdown()
+    {
+        int count = (int)(5 - (time / 2));
+        time += Time.deltaTime;
+        if (count == 1) return "Go!!";
+        else return (count - 1).ToString();
+    }
+
+    //==============================================================================================
+
 
     void OnGUI()
     {
+        if (FINISH_LINE_FLAG)
+        {
+            GUI.Label(new Rect(200.0f, 200.0f, 500, 500), string.Format("FINISH"), style);
+
+        }
+
         if (!controllable)
         {
             return;
         }
 
         float speed = GetSpeed();
+
+        //======================================code=======================================================
+        String formattedTime = "";
+        if (startGame & !startRace)
+        {
+            countdownTime = doCountdown();
+            controlsDisabled = true;
+            formattedTime = "";
+        }
+        if (countdownTime == "-1")
+        {
+            controlsDisabled = false;
+            time = 0;
+            startRace = true;
+            countdownTime = "";
+        }
+        if (startRace) formattedTime = formatTime(getTime());
+        //================================================================================================
+
         float speedKmH = speed * 3.6f;
+
+        //=======================================code=======================================================
+        GUI.Label(new Rect(850.0f, 50.0f, 150, 130), "Lap Time: " + formattedTime, timerStyle);
+        GUI.Label(new Rect(850.0f, 500.0f, 200, 200), countdownTime, countdownStyle);
+        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore()), timerStyle);
+        //====================================================================================================
+
         GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
 
         GUI.Label(new Rect(30.0f, 40.0f, 150, 130), string.Format("{0:F2} {1:F2} {2:F2}", afterFlightSlipperyTiresTime, brakeSlipperyTiresTime, handBrakeSlipperyTiresTime), style);
@@ -848,8 +1013,8 @@ public class ArcadeCar : MonoBehaviour
             // Draw wheel
             UnityEditor.Handles.DrawWireDisc(wsTo, wsAxle, axle.radius);
 
-			UnityEditor.Handles.DrawWireDisc(wsTo + wsAxle * wheelWidth, wsAxle, axle.radius);
-			UnityEditor.Handles.DrawWireDisc(wsTo - wsAxle * wheelWidth, wsAxle, axle.radius);
+            UnityEditor.Handles.DrawWireDisc(wsTo + wsAxle * wheelWidth, wsAxle, axle.radius);
+            UnityEditor.Handles.DrawWireDisc(wsTo - wsAxle * wheelWidth, wsAxle, axle.radius);
 
 
         }
@@ -1322,6 +1487,7 @@ public class ArcadeCar : MonoBehaviour
                     CalculateWheelRotationFromSpeed(axle, axle.wheelDataR, wsPos);
                 }
             }
+
 
             //visualRotationRad
 
