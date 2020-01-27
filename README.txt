@@ -12,3 +12,7 @@ select Mac, Windows, or Linux build support depending on your OS
 
 in Unity Hub click "Projects" on the left side of the window and then in the top right click "ADD"
 select the directory representing the repository you cloned (should be called ArcadeCarPhysics)
+
+To set the "Bundle Identifier" to build this project on android see the article at
+https://forum.unity.com/threads/how-do-i-set-up-the-bundle-identifier-in-unity-now.474022/
+the screenshot should be at the top of the article
