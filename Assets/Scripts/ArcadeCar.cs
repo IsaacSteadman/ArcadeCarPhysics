@@ -16,9 +16,6 @@ public class ArcadeCar : MonoBehaviour
     int gKey = 0;
     int hKey = 0;
 
-    //=========================================================
-    //bool finishPressed = false;
-    //========================================================
 
     public class WheelData
     {
@@ -280,11 +277,13 @@ public class ArcadeCar : MonoBehaviour
 
     void Reset(Vector3 position)
     {
-        position += new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f), 0.0f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        position = new Vector3(361, 4, -95);
+        //position += new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f), 0.0f, UnityEngine.Random.Range(-1.0f, 1.0f));
         float yaw = transform.eulerAngles.y + UnityEngine.Random.Range(-10.0f, 10.0f);
 
         transform.position = position;
-        transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
+        transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+        //transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
 
         rb.velocity = new Vector3(0f, 0f, 0f);
         rb.angularVelocity = new Vector3(0f, 0f, 0f);
@@ -483,7 +482,7 @@ public class ArcadeCar : MonoBehaviour
         {
             foreach (var x in scoreBoard)
             {
-                if (x < dummy) dummy = x;
+                if (x < dummy && x !=0) dummy = x;
             }
             return dummy;
         }
@@ -612,8 +611,13 @@ public class ArcadeCar : MonoBehaviour
 
         if (startPressed)
         {
+            FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
+            Reset(new Vector3(0f, 0f, 0f));
+            FINISH_LINE_FLAG = false;
+            //position = new Vector3(361, 4, -95);
+            //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
         }
         if (finishPressed)
         {
