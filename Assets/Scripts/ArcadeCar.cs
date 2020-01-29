@@ -253,27 +253,27 @@ public class ArcadeCar : MonoBehaviour
         for (int axleIndex = 0; axleIndex < axles.Length; axleIndex++)
         {
             Axle axle = axles[axleIndex];
-            Debug.Log("LEFT WHEEL STUFF");
-            Debug.Log("Left Wheel Position X:" + axle.wheelVisualLeft.transform.position.x);
-            Debug.Log("Left Wheel Position Y:" + axle.wheelVisualLeft.transform.position.y);
+            //Debug.Log("LEFT WHEEL STUFF");
+            //Debug.Log("Left Wheel Position X:" + axle.wheelVisualLeft.transform.position.x);
+            //Debug.Log("Left Wheel Position Y:" + axle.wheelVisualLeft.transform.position.y);
             Debug.Log("Left Wheel Position Z:" + axle.wheelVisualLeft.transform.position.z);
 
             Debug.Log("=======================================================");
 
-            Debug.Log("RIGHT WHEEL STUFF");
-            Debug.Log("Right Wheel Position X:" + axle.wheelVisualRight.transform.position.x);
-            Debug.Log("Right Wheel Position Y:" + axle.wheelVisualRight.transform.position.y);
+            //Debug.Log("RIGHT WHEEL STUFF");
+            //Debug.Log("Right Wheel Position X:" + axle.wheelVisualRight.transform.position.x);
+            //Debug.Log("Right Wheel Position Y:" + axle.wheelVisualRight.transform.position.y);
             Debug.Log("Right Wheel Position Z:" + axle.wheelVisualRight.transform.position.z);
             //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);    
 
-            if ((axle.wheelVisualLeft.transform.position.z < -205) && (axle.wheelVisualRight.transform.position.z < -205))
+            if ((axle.wheelVisualLeft.transform.position.z > -214) && (axle.wheelVisualRight.transform.position.z < -196) &&
+                (axle.wheelVisualLeft.transform.position.x < 366) && (axle.wheelVisualRight.transform.position.x < 366))
             {
                 Debug.Log("PLACE MESSAGE HERE");
                 FINISH_LINE_FLAG = true;
             }
         }
     }
-
 
     //==================================================================================================
 
