@@ -273,6 +273,8 @@ public class ArcadeCar : MonoBehaviour
             }
         }
     }
+
+
     //==================================================================================================
 
     void Reset(Vector3 position)
@@ -478,15 +480,38 @@ public class ArcadeCar : MonoBehaviour
     float bestScore()
     {
         float dummy = 9999999999;
+        //make sure there is at least one score
         if (scoreBoard.Count != 0)
         {
-            foreach (var x in scoreBoard)
-            {
-                if (x < dummy && x !=0) dummy = x;
-            }
-            return dummy;
+                foreach (var x in scoreBoard)
+                {
+                    if (x < dummy && x != 0) dummy = x;
+                }
+                return dummy;
         }
         else return -1;
+    }
+
+    float bestScore0()
+    {
+        if (scoreBoard.Count != 0) return scoreBoard[0];
+
+        else return -1;
+    }
+
+    List<float> bestScores()
+    {
+        //float dummy = 9999999999;
+        List<float> scoreList = new List<float>();
+
+        //make sure there is at least one score
+        if (scoreBoard.Count != 0)
+        {
+            int scoreNum = 3;
+            if (scoreNum <= scoreBoard.Count) scoreNum = scoreBoard.Count;
+            return scoreBoard.GetRange(0, scoreNum);
+        }
+        else return scoreList;
     }
     String countdownTime = "";
     //====================================================================
@@ -608,24 +633,27 @@ public class ArcadeCar : MonoBehaviour
 
         bool startPressed = Input.GetKey(KeyCode.S) && controllable;
         bool finishPressed = FINISH_LINE_FLAG;// = Input.GetKey(KeyCode.F) && controllable;
+        if (finishPressed)
+        {
+            FINISH_LINE_FLAG = false;
 
+            startGame = false;
+            startRace = false;
+            float bestScr = bestScore0();
+            //float bestScr = scoreBoard[0];
+            if (bestScr == -1 || time <= bestScr) countdownTime = "HIGH SCORE!";
+            else countdownTime = "Good Try!";
+            scoreBoard.Add(time);
+            scoreBoard.Sort();
+        }
         if (startPressed)
         {
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
             Reset(new Vector3(0f, 0f, 0f));
-            FINISH_LINE_FLAG = false;
             //position = new Vector3(361, 4, -95);
             //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
-        }
-        if (finishPressed)
-        {
-            startGame = false;
-            startRace = false;
-            float bestScr = bestScore();
-            if (bestScr == -1 || time < bestScr) countdownTime = "HIGH SCORE!";
-            scoreBoard.Add(time);
         }
         //======================================================================================
 
@@ -883,7 +911,7 @@ public class ArcadeCar : MonoBehaviour
 
     //==============================================================================================
 
-
+    String formattedTime = "";
     void OnGUI()
     {
         if (FINISH_LINE_FLAG)
@@ -900,7 +928,7 @@ public class ArcadeCar : MonoBehaviour
         float speed = GetSpeed();
 
         //======================================code=======================================================
-        String formattedTime = "";
+        //String formattedTime = "";
         if (startGame & !startRace)
         {
             countdownTime = doCountdown();
@@ -922,7 +950,10 @@ public class ArcadeCar : MonoBehaviour
         //=======================================code=======================================================
         GUI.Label(new Rect(850.0f, 50.0f, 150, 130), "Lap Time: " + formattedTime, timerStyle);
         GUI.Label(new Rect(850.0f, 500.0f, 200, 200), countdownTime, countdownStyle);
-        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore()), timerStyle);
+
+        String top5Scores = "";
+
+        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
         //====================================================================================================
 
         GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
