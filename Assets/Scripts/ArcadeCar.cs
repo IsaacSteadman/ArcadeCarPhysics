@@ -271,6 +271,7 @@ public class ArcadeCar : MonoBehaviour
             {
                 Debug.Log("PLACE MESSAGE HERE");
                 FINISH_LINE_FLAG = true;
+
             }
         }
     }
@@ -305,9 +306,10 @@ public class ArcadeCar : MonoBehaviour
         style.normal.textColor = Color.red;
 
         //=====================code====================================================
-        timerStyle.normal.textColor = Color.white;
+        timerStyle.normal.textColor = Color.yellow;
+
         timerStyle.fontSize = 20;
-        countdownStyle.normal.textColor = Color.white;
+        countdownStyle.normal.textColor = Color.red;
         countdownStyle.fontSize = 50;
         //=========================================================================
 
@@ -508,7 +510,7 @@ public class ArcadeCar : MonoBehaviour
         if (scoreBoard.Count != 0)
         {
             int scoreNum = 3;
-            if (scoreNum <= scoreBoard.Count) scoreNum = scoreBoard.Count;
+            if (scoreNum >= scoreBoard.Count) scoreNum = scoreBoard.Count;
             return scoreBoard.GetRange(0, scoreNum);
         }
         else return scoreList;
@@ -633,6 +635,7 @@ public class ArcadeCar : MonoBehaviour
 
         bool startPressed = Input.GetKey(KeyCode.S) && controllable;
         bool finishPressed = FINISH_LINE_FLAG;// = Input.GetKey(KeyCode.F) && controllable;
+
         if (finishPressed)
         {
             FINISH_LINE_FLAG = false;
@@ -643,7 +646,8 @@ public class ArcadeCar : MonoBehaviour
             //float bestScr = scoreBoard[0];
             if (bestScr == -1 || time <= bestScr) countdownTime = "HIGH SCORE!";
             else countdownTime = "Good Try!";
-            scoreBoard.Add(time);
+            if(!scoreBoard.Contains(time)) scoreBoard.Add(time);
+
             scoreBoard.Sort();
         }
         if (startPressed)
@@ -651,6 +655,7 @@ public class ArcadeCar : MonoBehaviour
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
+            startRace = false;
             Reset(new Vector3(0f, 0f, 0f));
             //position = new Vector3(361, 4, -95);
             //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
@@ -883,20 +888,22 @@ public class ArcadeCar : MonoBehaviour
     }
 
     //===============================code===============================================================
+
+    //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
     public float getTime()
     {
         time += Time.deltaTime;
-        return time;
+        return time/2;
     }
     public String formatTime(float time)
     {
         if (time == -1) return "N/A";
         else
         {
-            var minutes = time / 60; //Divide the guiTime by sixty to get the minutes.
-            var seconds = time % 60;//Use the euclidean division for the seconds.
-            var fraction = (time * 100) % 100;
-            String stringTime = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+            var minutes = Mathf.Floor(time / 60); //Divide the guiTime by sixty to get the minutes.
+            var seconds = Mathf.Floor(time % 60);//Use the euclidean division for the seconds.
+            var fraction = Mathf.Floor((time * 100) % 100);
+            String stringTime = string.Format("{0:00} : {1:00} : {2:00}", minutes, seconds, fraction);
             return stringTime;
         }
     }
@@ -916,7 +923,7 @@ public class ArcadeCar : MonoBehaviour
     {
         if (FINISH_LINE_FLAG)
         {
-            GUI.Label(new Rect(200.0f, 200.0f, 500, 500), string.Format("FINISH"), style);
+            //GUI.Label(new Rect(200.0f, 200.0f, 500, 500), string.Format("FINISH"), style);
             controlsDisabled = true;
         }
 
@@ -951,9 +958,22 @@ public class ArcadeCar : MonoBehaviour
         GUI.Label(new Rect(850.0f, 50.0f, 150, 130), "Lap Time: " + formattedTime, timerStyle);
         GUI.Label(new Rect(850.0f, 500.0f, 200, 200), countdownTime, countdownStyle);
 
-        String top5Scores = "";
+        String top5ScoresString = "";
+        List<float> top5Scores = bestScores();
+        int count = 1;
+        if (top5Scores.Count == 0) top5ScoresString = "N/A";
+        else foreach (var x in top5Scores)
+        {
+            top5ScoresString += String.Format("#{0} == ", count);
+            count++;
+            top5ScoresString += formatTime(x/2);
+            top5ScoresString += "\n";
 
-        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
+        }
+
+        //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
+        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+
         //====================================================================================================
 
         GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
