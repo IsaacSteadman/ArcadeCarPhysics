@@ -18,6 +18,7 @@ public class ArcadeCar : MonoBehaviour
     public bool forward_pressed = false;
     public bool reverse_pressed = false;
     public bool reset_pressed = false;
+    public bool start_pressed = false;
 
 
     public class WheelData
@@ -281,10 +282,16 @@ public class ArcadeCar : MonoBehaviour
 
     //==================================================================================================
 
-    void Reset(Vector3 position)
+    void Reset(Vector3 position, bool is_absolute=false)
     {
-        position = new Vector3(361, 4, -95);
-        //position += new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f), 0.0f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        if (is_absolute)
+        {
+            position = new Vector3(361, 4, -95);
+        }
+        else
+        {
+            position += new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f), 0.0f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        }
         float yaw = transform.eulerAngles.y + UnityEngine.Random.Range(-10.0f, 10.0f);
 
         transform.position = position;
@@ -586,7 +593,7 @@ public class ArcadeCar : MonoBehaviour
             h = 0.0f;
         }
 
-        if (Input.GetKey(KeyCode.R) && controllable)
+        if (reset_pressed && controllable)
         {
 
             //====================code========================================
@@ -639,13 +646,13 @@ public class ArcadeCar : MonoBehaviour
             else
             {
                 // Hard reset
-                Reset(new Vector3(-69.48f, 5.25f, 132.71f));
+                Reset(new Vector3(-69.48f, 5.25f, 132.71f), true);
             }
         }
 
         //=====================code=================================================================
 
-        bool startPressed = Input.GetKey(KeyCode.S) && controllable;
+        bool startPressed = start_pressed && controllable;
         bool finishPressed = FINISH_LINE_FLAG;// = Input.GetKey(KeyCode.F) && controllable;
 
         if (finishPressed)
@@ -668,7 +675,7 @@ public class ArcadeCar : MonoBehaviour
             time = 0;
             startGame = true;
             startRace = false;
-            Reset(new Vector3(0f, 0f, 0f));
+            Reset(new Vector3(0f, 0f, 0f), true);
             //position = new Vector3(361, 4, -95);
             //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
         }
