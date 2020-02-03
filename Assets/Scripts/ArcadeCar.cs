@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 
 
 public class ArcadeCar : MonoBehaviour
@@ -15,6 +15,9 @@ public class ArcadeCar : MonoBehaviour
 
     int gKey = 0;
     int hKey = 0;
+    public bool forward_pressed = false;
+    public bool reverse_pressed = false;
+    public bool reset_pressed = false;
 
 
     public class WheelData
@@ -526,7 +529,16 @@ public class ArcadeCar : MonoBehaviour
 
         if (controlsDisabled == false)
         {
-            v = Input.GetAxis("Vertical");
+            // v = Input.GetAxis("Vertical");
+            v = 0;
+            if (forward_pressed)
+            {
+                v += 1.0f;
+            }
+            if (reverse_pressed)
+            {
+                v -= 1.0f;
+            }
             h = Input.GetAxis("Horizontal");
             //Debug.Log (string.Format ("H = {0}", h));
             //float h = Input.acceleration.x*12;

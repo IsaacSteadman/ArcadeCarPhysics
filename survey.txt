@@ -1,0 +1,7 @@
+^(\d(\.(\d)?)?)|(\.\d)$
+new:
+^((10)|(10.0)|(\d(\.(\d)?)?)|(\.\d))$
+new new:
+^((10.)|(10)|(10.0)|(\d(\.(\d)?)?)|(\.\d))$
+Answer must be in the form of #.#
+ Input a number from 0.0 to 9.9
