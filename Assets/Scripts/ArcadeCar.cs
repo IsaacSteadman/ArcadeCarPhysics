@@ -318,7 +318,7 @@ static GUIStyle style = new GUIStyle();
             //Debug.Log("Right Wheel Position X:" + axle.wheelVisualRight.transform.position.x);
             //Debug.Log("Right Wheel Position Y:" + axle.wheelVisualRight.transform.position.y);
             Debug.Log("Right Wheel Position Z:" + axle.wheelVisualRight.transform.position.z);
-            //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);    
+            //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);
 
             if ((axle.wheelVisualLeft.transform.position.z > -214) && (axle.wheelVisualRight.transform.position.z < -196) &&
                 (axle.wheelVisualLeft.transform.position.x < 366) && (axle.wheelVisualRight.transform.position.x < 366))
@@ -345,8 +345,11 @@ static GUIStyle style = new GUIStyle();
         float yaw = transform.eulerAngles.y + UnityEngine.Random.Range(-10.0f, 10.0f);
 
         transform.position = position;
-        transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
-        //transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
+        if(is_absolute){
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+        }else{
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
+        }
 
         rb.velocity = new Vector3(0f, 0f, 0f);
         rb.angularVelocity = new Vector3(0f, 0f, 0f);
@@ -599,21 +602,16 @@ static GUIStyle style = new GUIStyle();
             {
                 v -= 1.0f;
             }
-            h = Input.GetAxis("Horizontal");
-            //Debug.Log (string.Format ("H = {0}", h));
-            //float h = Input.acceleration.x*12;
+            if (SystemInfo.deviceType == DeviceType.Desktop)
+            {
+                h = Input.GetAxis("Horizontal");
+            }
+            else if (SystemInfo.deviceType == DeviceType.Handheld)
+            {
+                h = Input.acceleration.x * 12;
+            }
 
             Touch[] myTouches = Input.touches;
-            //float v = 0;
-            //for(int i = 0; i < Input.touchCount; i++)
-            //{
-            //    Debug.Log(myTouches[i].position);
-            //    if(myTouches[i].position.x > 500){
-            //        v += 0.5f;
-            //    }else{
-            //        v -= 0.5f;
-            //    }
-            //}
         }
         if (Input.GetKey(KeyCode.G))
         {
@@ -810,8 +808,14 @@ static GUIStyle style = new GUIStyle();
 
             newSteerAngle = Mathf.Min(Math.Abs(newSteerAngle), steerLimit) * sgn;
 
-            axles[0].steerAngle = newSteerAngle;
-            //axles[0].steerAngle = h;
+            if (SystemInfo.deviceType == DeviceType.Desktop)
+            {
+                axles[0].steerAngle = newSteerAngle;
+            }
+            else if (SystemInfo.deviceType == DeviceType.Handheld)
+            {
+                axles[0].steerAngle = h;
+            }
         }
         else
         {
