@@ -268,7 +268,7 @@ public class ArcadeCar : MonoBehaviour
             //Debug.Log("Right Wheel Position X:" + axle.wheelVisualRight.transform.position.x);
             //Debug.Log("Right Wheel Position Y:" + axle.wheelVisualRight.transform.position.y);
             Debug.Log("Right Wheel Position Z:" + axle.wheelVisualRight.transform.position.z);
-            //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);    
+            //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);
 
             if ((axle.wheelVisualLeft.transform.position.z > -214) && (axle.wheelVisualRight.transform.position.z < -196) &&
                 (axle.wheelVisualLeft.transform.position.x < 366) && (axle.wheelVisualRight.transform.position.x < 366))
@@ -295,8 +295,11 @@ public class ArcadeCar : MonoBehaviour
         float yaw = transform.eulerAngles.y + UnityEngine.Random.Range(-10.0f, 10.0f);
 
         transform.position = position;
-        transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
-        //transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
+        if(is_absolute){
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+        }else{
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
+        }
 
         rb.velocity = new Vector3(0f, 0f, 0f);
         rb.angularVelocity = new Vector3(0f, 0f, 0f);
