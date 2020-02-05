@@ -237,10 +237,60 @@ public class ArcadeCar : MonoBehaviour
     bool controlsDisabled = false;
     public float time;
     List<float> scoreBoard = new List<float>();
-    //======================================================================================
+    //var scoreBoard1 = List<KeyValuePair<int, string>>;
 
-    // UI style for debug render
-    static GUIStyle style = new GUIStyle();
+    int lapCount = 0;
+    int[] randomizedLapArray;// = { 0, 1, 2, 3, 4, 5, 6 };
+
+    int[] Randomize(int[] arr)
+    {
+        System.Random rand = new System.Random();
+
+        // For each spot in the array, pick
+        // a random item to swap into that spot.
+        for (int i = 0; i < arr.Length - 1; i++)
+        {
+            int j = rand.Next(i, arr.Length);
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+        return arr;
+    }
+    void changeLapVariables() { 
+        if(lapCount <=6) 
+            switch (randomizedLapArray[lapCount])
+            {
+                //control lap
+                case 0:
+                    Application.targetFrameRate = 10;// 30;
+                    break;
+                case 1:
+                    Application.targetFrameRate = 10;// 15;
+                    break;
+                case 2:
+                    Application.targetFrameRate = 10;//20;
+                    break;
+                case 3:
+                    Application.targetFrameRate = 10;//24;
+                    break;
+                case 4:
+                    Application.targetFrameRate = 60;//40;
+                    break;
+                case 5:
+                    Application.targetFrameRate = 60;//50;
+                    break;
+                case 6:
+                    Application.targetFrameRate = 60;//
+                    break;
+                default:
+                    Application.targetFrameRate = 60;
+                    break;
+            }
+    }
+
+// UI style for debug render
+static GUIStyle style = new GUIStyle();
 
     //======================================================================================
     static GUIStyle timerStyle = new GUIStyle();
@@ -311,11 +361,14 @@ public class ArcadeCar : MonoBehaviour
 
     void Start()
     {
-
-
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6 };
+        randomizedLapArray = Randomize(tempArray);
+        //Debug.Log(string.Format("LIST OF RANDOMIZED NUM {0},{1},{2},{3},{4},{5},{6}", randomizedLapArray[0], randomizedLapArray[1], randomizedLapArray[2], randomizedLapArray[3], randomizedLapArray[4], randomizedLapArray[5], randomizedLapArray[6]);
+        //randomizedLapArray.Add(0);
         style.normal.textColor = Color.red;
 
         //=====================code====================================================
+        //fillRandomizedArray();
         timerStyle.normal.textColor = Color.yellow;
 
         timerStyle.fontSize = 20;
@@ -671,6 +724,7 @@ public class ArcadeCar : MonoBehaviour
         }
         if (startPressed)
         {
+            //changeLapVariables();
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
@@ -965,6 +1019,10 @@ public class ArcadeCar : MonoBehaviour
         {
             controlsDisabled = false;
             time = 0;
+            changeLapVariables();
+            lapCount++;
+            Debug.Log(randomizedLapArray[lapCount]);
+            Debug.Log(Application.targetFrameRate);
             startRace = true;
             countdownTime = "";
         }
@@ -986,6 +1044,7 @@ public class ArcadeCar : MonoBehaviour
             top5ScoresString += String.Format("#{0} == ", count);
             count++;
             top5ScoresString += formatTime(x/2);
+            //top5ScoresString += String.Format(" (Lap {0})", lapCount);
             top5ScoresString += "\n";
 
         }
