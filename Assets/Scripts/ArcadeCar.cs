@@ -546,21 +546,16 @@ public class ArcadeCar : MonoBehaviour
             {
                 v -= 1.0f;
             }
-            h = Input.GetAxis("Horizontal");
-            //Debug.Log (string.Format ("H = {0}", h));
-            //float h = Input.acceleration.x*12;
+            if (SystemInfo.deviceType == DeviceType.Desktop)
+            {
+                h = Input.GetAxis("Horizontal");
+            }
+            else if (SystemInfo.deviceType == DeviceType.Handheld)
+            {
+                h = Input.acceleration.x * 12;
+            }
 
             Touch[] myTouches = Input.touches;
-            //float v = 0;
-            //for(int i = 0; i < Input.touchCount; i++)
-            //{
-            //    Debug.Log(myTouches[i].position);
-            //    if(myTouches[i].position.x > 500){
-            //        v += 0.5f;
-            //    }else{
-            //        v -= 0.5f;
-            //    }
-            //}
         }
         if (Input.GetKey(KeyCode.G))
         {
@@ -756,8 +751,14 @@ public class ArcadeCar : MonoBehaviour
 
             newSteerAngle = Mathf.Min(Math.Abs(newSteerAngle), steerLimit) * sgn;
 
-            axles[0].steerAngle = newSteerAngle;
-            //axles[0].steerAngle = h;
+            if (SystemInfo.deviceType == DeviceType.Desktop)
+            {
+                axles[0].steerAngle = newSteerAngle;
+            }
+            else if (SystemInfo.deviceType == DeviceType.Handheld)
+            {
+                axles[0].steerAngle = h;
+            }
         }
         else
         {
