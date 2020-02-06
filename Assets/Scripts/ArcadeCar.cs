@@ -15,6 +15,7 @@ public class ArcadeCar : MonoBehaviour
 
     int gKey = 0;
     int hKey = 0;
+    int resolutionMultiple = 120;
     public bool forward_pressed = false;
     public bool reverse_pressed = false;
     public bool reset_pressed = false;
@@ -239,6 +240,89 @@ public class ArcadeCar : MonoBehaviour
     List<float> scoreBoard = new List<float>();
     //======================================================================================
 
+    int lapCount = 0;
+    int[] randomizedLapArray;// = { 0, 1, 2, 3, 4, 5, 6 };
+
+    int[] Randomize(int[] arr)
+    {
+        System.Random rand = new System.Random();
+
+        // For each spot in the array, pick
+        // a random item to swap into that spot.
+        for (int i = 0; i < arr.Length - 1; i++)
+        {
+            int j = rand.Next(i, arr.Length);
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+        return arr;
+    }
+    void changeLapVariables() {
+        if(lapCount <=6)
+            switch (randomizedLapArray[lapCount])
+            {
+                //control lap
+                case 0:
+                    Application.targetFrameRate = 10;// 30;
+                    break;
+                case 1:
+                    Application.targetFrameRate = 10;// 15;
+                    break;
+                case 2:
+                    Application.targetFrameRate = 10;//20;
+                    break;
+                case 3:
+                    Application.targetFrameRate = 10;//24;
+                    break;
+                case 4:
+                    Application.targetFrameRate = 60;//40;
+                    break;
+                case 5:
+                    Application.targetFrameRate = 60;//50;
+                    break;
+                case 6:
+                    Application.targetFrameRate = 60;//
+                    break;
+                default:
+                    Application.targetFrameRate = 60;
+                    break;
+            }
+    }
+    void changeResolution()
+    {
+        if (lapCount <= 6)
+            switch (randomizedLapArray[lapCount])
+            {
+                //control lap
+                case 0:
+                    resolutionMultiple = 12; // 256x144
+                    break;
+                case 1:
+                    resolutionMultiple = 40; // 640x360
+                    break;
+                case 2:
+                    resolutionMultiple = 80; // 1280x720
+                    break;
+                case 3:
+                    resolutionMultiple = 120; // 1920x1080
+                    break;
+                case 4:
+                    resolutionMultiple = 12;
+                    break;
+                case 5:
+                    resolutionMultiple = 40;
+                    break;
+                case 6:
+                    resolutionMultiple = 80;
+                    break;
+                default:
+                    resolutionMultiple = 120; // 1920x1080
+                    break;
+            }
+        Screen.SetResolution(16*resolutionMultiple,9*resolutionMultiple,true);
+    }
+
     // UI style for debug render
     static GUIStyle style = new GUIStyle();
 
@@ -309,12 +393,15 @@ public class ArcadeCar : MonoBehaviour
             axles[axleIndex].steerAngle = 0.0f;
         }
 
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6 };
+        randomizedLapArray = Randomize(tempArray);
+
         Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
     }
 
     void Start()
     {
-
+        //Screen.SetResolution(1280,720,true);
 
         style.normal.textColor = Color.red;
 
@@ -961,6 +1048,7 @@ public class ArcadeCar : MonoBehaviour
         //String formattedTime = "";
         if (startGame & !startRace)
         {
+            changeResolution();
             countdownTime = doCountdown();
             controlsDisabled = true;
             formattedTime = "";
@@ -969,6 +1057,10 @@ public class ArcadeCar : MonoBehaviour
         {
             controlsDisabled = false;
             time = 0;
+            //changeLapVariables();
+            lapCount++;
+            //Debug.Log(randomizedLapArray[lapCount]);
+            //Debug.Log(Application.targetFrameRate);
             startRace = true;
             countdownTime = "";
         }
@@ -991,15 +1083,19 @@ public class ArcadeCar : MonoBehaviour
             count++;
             top5ScoresString += formatTime(x/2);
             top5ScoresString += "\n";
-
         }
 
         //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
-        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
-
+        //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+        //GUI.Box(new Rect(15.0f*resolutionMultiple, 2.5f*resolutionMultiple, resolutionMultiple, resolutionMultiple), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+        float screenHeight = Screen.height;
+        Debug.Log(screenHeight);
+        float screenWidth = Screen.width;
+        Debug.Log(screenWidth);
+        GUI.Box(new Rect(screenWidth*(0.75f), screenHeight*(0.333f), screenWidth/(6.0f), screenHeight/3), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
         //====================================================================================================
 
-        GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
+        /*GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
 
         GUI.Label(new Rect(30.0f, 40.0f, 150, 130), string.Format("{0:F2} {1:F2} {2:F2}", afterFlightSlipperyTiresTime, brakeSlipperyTiresTime, handBrakeSlipperyTiresTime), style);
 
@@ -1008,7 +1104,7 @@ public class ArcadeCar : MonoBehaviour
         {
             GUI.Label(new Rect(30.0f, yPos, 150, 130), string.Format("Axle {0}, steering angle {1:F2}", axleIndex, axles[axleIndex].steerAngle), style);
             yPos += 18.0f;
-        }
+        }*/
 
         Camera cam = Camera.current;
         if (cam == null)
