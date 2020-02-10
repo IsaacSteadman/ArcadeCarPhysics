@@ -16,8 +16,10 @@ public class ArcadeCar : MonoBehaviour
     int gKey = 0;
     int hKey = 0;
     int resolutionMultiple = 120;
+    int q_len = 30;
     public bool forward_pressed = false;
     public bool reverse_pressed = false;
+    private Queue<DataInputContainer> input_queue = new Queue<DataInputContainer>();
     public bool reset_pressed = false;
     public bool start_pressed = false;
 
@@ -643,6 +645,14 @@ public class ArcadeCar : MonoBehaviour
             else if (SystemInfo.deviceType == DeviceType.Handheld)
             {
                 h = Input.acceleration.x * 12;
+            }
+
+            input_queue.Enqueue(new DataInputContainer(v, h));
+            if (input_queue.Count >= q_len)
+            {
+                DataInputContainer input = input_queue.Dequeue();
+                v = input.v;
+                h = input.h;
             }
 
             Touch[] myTouches = Input.touches;
