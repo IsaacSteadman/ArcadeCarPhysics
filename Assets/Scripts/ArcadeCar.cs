@@ -15,8 +15,11 @@ public class ArcadeCar : MonoBehaviour
 
     int gKey = 0;
     int hKey = 0;
+    int resolutionMultiple = 120;
+    int q_len = 30;
     public bool forward_pressed = false;
     public bool reverse_pressed = false;
+    private Queue<DataInputContainer> input_queue = new Queue<DataInputContainer>();
     public bool reset_pressed = false;
     public bool start_pressed = false;
 
@@ -237,7 +240,7 @@ public class ArcadeCar : MonoBehaviour
     bool controlsDisabled = false;
     public float time;
     List<float> scoreBoard = new List<float>();
-    //var scoreBoard1 = List<KeyValuePair<int, string>>;
+    //======================================================================================
 
     int lapCount = 0;
     int[] randomizedLapArray;// = { 0, 1, 2, 3, 4, 5, 6 };
@@ -257,8 +260,9 @@ public class ArcadeCar : MonoBehaviour
         }
         return arr;
     }
-    void changeLapVariables() { 
-        if(lapCount <=6) 
+    void changeLapVariables()
+    {
+        if (lapCount <= 6)
             switch (randomizedLapArray[lapCount])
             {
                 //control lap
@@ -288,9 +292,42 @@ public class ArcadeCar : MonoBehaviour
                     break;
             }
     }
+    void changeResolution()
+    {
+        if (lapCount <= 6)
+            switch (randomizedLapArray[lapCount])
+            {
+                //control lap
+                case 0:
+                    resolutionMultiple = 12; // 256x144
+                    break;
+                case 1:
+                    resolutionMultiple = 40; // 640x360
+                    break;
+                case 2:
+                    resolutionMultiple = 80; // 1280x720
+                    break;
+                case 3:
+                    resolutionMultiple = 120; // 1920x1080
+                    break;
+                case 4:
+                    resolutionMultiple = 12;
+                    break;
+                case 5:
+                    resolutionMultiple = 40;
+                    break;
+                case 6:
+                    resolutionMultiple = 80;
+                    break;
+                default:
+                    resolutionMultiple = 120; // 1920x1080
+                    break;
+            }
+        Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
+    }
 
-// UI style for debug render
-static GUIStyle style = new GUIStyle();
+    // UI style for debug render
+    static GUIStyle style = new GUIStyle();
 
     //======================================================================================
     static GUIStyle timerStyle = new GUIStyle();
@@ -332,7 +369,7 @@ static GUIStyle style = new GUIStyle();
 
     //==================================================================================================
 
-    void Reset(Vector3 position, bool is_absolute=false)
+    void Reset(Vector3 position, bool is_absolute = false)
     {
         if (is_absolute)
         {
@@ -345,9 +382,12 @@ static GUIStyle style = new GUIStyle();
         float yaw = transform.eulerAngles.y + UnityEngine.Random.Range(-10.0f, 10.0f);
 
         transform.position = position;
-        if(is_absolute){
+        if (is_absolute)
+        {
             transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
-        }else{
+        }
+        else
+        {
             transform.rotation = Quaternion.Euler(new Vector3(0.0f, yaw, 0.0f));
         }
 
@@ -359,19 +399,19 @@ static GUIStyle style = new GUIStyle();
             axles[axleIndex].steerAngle = 0.0f;
         }
 
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6 };
+        randomizedLapArray = Randomize(tempArray);
+
         Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
     }
 
     void Start()
     {
-        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6 };
-        randomizedLapArray = Randomize(tempArray);
-        //Debug.Log(string.Format("LIST OF RANDOMIZED NUM {0},{1},{2},{3},{4},{5},{6}", randomizedLapArray[0], randomizedLapArray[1], randomizedLapArray[2], randomizedLapArray[3], randomizedLapArray[4], randomizedLapArray[5], randomizedLapArray[6]);
-        //randomizedLapArray.Add(0);
+        //Screen.SetResolution(1280,720,true);
+
         style.normal.textColor = Color.red;
 
         //=====================code====================================================
-        //fillRandomizedArray();
         timerStyle.normal.textColor = Color.yellow;
 
         timerStyle.fontSize = 20;
@@ -551,11 +591,11 @@ static GUIStyle style = new GUIStyle();
         //make sure there is at least one score
         if (scoreBoard.Count != 0)
         {
-                foreach (var x in scoreBoard)
-                {
-                    if (x < dummy && x != 0) dummy = x;
-                }
-                return dummy;
+            foreach (var x in scoreBoard)
+            {
+                if (x < dummy && x != 0) dummy = x;
+            }
+            return dummy;
         }
         else return -1;
     }
@@ -609,6 +649,14 @@ static GUIStyle style = new GUIStyle();
             else if (SystemInfo.deviceType == DeviceType.Handheld)
             {
                 h = Input.acceleration.x * 12;
+            }
+
+            input_queue.Enqueue(new DataInputContainer(v, h));
+            if (input_queue.Count >= q_len)
+            {
+                DataInputContainer input = input_queue.Dequeue();
+                v = input.v;
+                h = input.h;
             }
 
             Touch[] myTouches = Input.touches;
@@ -716,13 +764,12 @@ static GUIStyle style = new GUIStyle();
             //float bestScr = scoreBoard[0];
             if (bestScr == -1 || time <= bestScr) countdownTime = "HIGH SCORE!";
             else countdownTime = "Good Try!";
-            if(!scoreBoard.Contains(time)) scoreBoard.Add(time);
+            if (!scoreBoard.Contains(time)) scoreBoard.Add(time);
 
             scoreBoard.Sort();
         }
         if (startPressed)
         {
-            //changeLapVariables();
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
@@ -970,7 +1017,7 @@ static GUIStyle style = new GUIStyle();
     public float getTime()
     {
         time += Time.deltaTime;
-        return time/2;
+        return time / 2;
     }
     public String formatTime(float time)
     {
@@ -1015,6 +1062,7 @@ static GUIStyle style = new GUIStyle();
         //String formattedTime = "";
         if (startGame & !startRace)
         {
+            changeResolution();
             countdownTime = doCountdown();
             controlsDisabled = true;
             formattedTime = "";
@@ -1023,10 +1071,10 @@ static GUIStyle style = new GUIStyle();
         {
             controlsDisabled = false;
             time = 0;
-            changeLapVariables();
+            //changeLapVariables();
             lapCount++;
-            Debug.Log(randomizedLapArray[lapCount]);
-            Debug.Log(Application.targetFrameRate);
+            //Debug.Log(randomizedLapArray[lapCount]);
+            //Debug.Log(Application.targetFrameRate);
             startRace = true;
             countdownTime = "";
         }
@@ -1044,30 +1092,31 @@ static GUIStyle style = new GUIStyle();
         int count = 1;
         if (top5Scores.Count == 0) top5ScoresString = "N/A";
         else foreach (var x in top5Scores)
-        {
-            top5ScoresString += String.Format("#{0} == ", count);
-            count++;
-            top5ScoresString += formatTime(x/2);
-            //top5ScoresString += String.Format(" (Lap {0})", lapCount);
-            top5ScoresString += "\n";
-
-        }
+            {
+                top5ScoresString += String.Format("#{0} == ", count);
+                count++;
+                top5ScoresString += formatTime(x / 2);
+                top5ScoresString += "\n";
+            }
 
         //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
-        GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
-
+        //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+        //GUI.Box(new Rect(15.0f*resolutionMultiple, 2.5f*resolutionMultiple, resolutionMultiple, resolutionMultiple), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+        float screenHeight = Screen.height;
+        Debug.Log(screenHeight);
+        float screenWidth = Screen.width;
+        Debug.Log(screenWidth);
+        GUI.Box(new Rect(screenWidth * (0.75f), screenHeight * (0.333f), screenWidth / (6.0f), screenHeight / 3), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
         //====================================================================================================
 
-        GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
-
+        /*GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
         GUI.Label(new Rect(30.0f, 40.0f, 150, 130), string.Format("{0:F2} {1:F2} {2:F2}", afterFlightSlipperyTiresTime, brakeSlipperyTiresTime, handBrakeSlipperyTiresTime), style);
-
         float yPos = 60.0f;
         for (int axleIndex = 0; axleIndex < axles.Length; axleIndex++)
         {
             GUI.Label(new Rect(30.0f, yPos, 150, 130), string.Format("Axle {0}, steering angle {1:F2}", axleIndex, axles[axleIndex].steerAngle), style);
             yPos += 18.0f;
-        }
+        }*/
 
         Camera cam = Camera.current;
         if (cam == null)
@@ -1638,4 +1687,3 @@ static GUIStyle style = new GUIStyle();
 
 
 }
-
