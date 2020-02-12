@@ -240,6 +240,12 @@ public class ArcadeCar : MonoBehaviour
     bool controlsDisabled = false;
     public float time;
     List<float> scoreBoard = new List<float>();
+
+
+    List<float> FPSList = new List<float>();
+    List<float> ResolutionList = new List<float>();
+    List<string> TimeList = new List<string>();
+    string resultText = "";
     //======================================================================================
 
     int lapCount = 0;
@@ -263,6 +269,8 @@ public class ArcadeCar : MonoBehaviour
     void changeLapVariables()
     {
         if (lapCount <= 6)
+        {
+
             switch (randomizedLapArray[lapCount])
             {
                 //control lap
@@ -291,10 +299,13 @@ public class ArcadeCar : MonoBehaviour
                     Application.targetFrameRate = 60;
                     break;
             }
+            FPSList.Add(Application.targetFrameRate);
+        }
     }
     void changeResolution()
     {
         if (lapCount <= 6)
+        {
             switch (randomizedLapArray[lapCount])
             {
                 //control lap
@@ -323,6 +334,8 @@ public class ArcadeCar : MonoBehaviour
                     resolutionMultiple = 120; // 1920x1080
                     break;
             }
+        }
+        ResolutionList.Add(resolutionMultiple);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
     }
 
@@ -623,7 +636,7 @@ public class ArcadeCar : MonoBehaviour
     }
     String countdownTime = "";
     //====================================================================
-
+    bool dataFlag = false;
 
     void UpdateInput()
     {
@@ -753,9 +766,10 @@ public class ArcadeCar : MonoBehaviour
 
         bool startPressed = start_pressed && controllable;
         bool finishPressed = FINISH_LINE_FLAG;// = Input.GetKey(KeyCode.F) && controllable;
-
+        
         if (finishPressed)
         {
+
             FINISH_LINE_FLAG = false;
 
             startGame = false;
@@ -764,12 +778,56 @@ public class ArcadeCar : MonoBehaviour
             //float bestScr = scoreBoard[0];
             if (bestScr == -1 || time <= bestScr) countdownTime = "HIGH SCORE!";
             else countdownTime = "Good Try!";
+            if (!scoreBoard.Contains(time)) TimeList.Add(formatTime(time / 2));
             if (!scoreBoard.Contains(time)) scoreBoard.Add(time);
 
             scoreBoard.Sort();
+
+            //=============================================
+            if (dataFlag == false)//&& lapCount > 0)//lapCount == lapCount &&
+            {
+
+                for (int i = 0; i < lapCount + 1; i++)
+                {
+                    resultText += "Lap ";
+                    resultText += i.ToString();
+                    resultText += ": FPS = ";
+                    resultText += FPSList[i].ToString();
+                    resultText += ", LT = ";
+                    // resultText += ResolutionList[i].ToString();
+                    //resultText += ", ";
+                    resultText += TimeList[i];
+                    resultText += "\n";
+
+                }
+                lapCount++;
+                dataFlag = true;
+
+            }
+            //=======================================
         }
         if (startPressed)
         {
+            ////=============================================
+            //if ( dataFlag == false && lapCount >0)//lapCount == lapCount &&
+            //{
+
+            //    for (int i = 0; i < lapCount+1; i++)
+            //    {
+            //        resultText += "Lap ";
+            //        resultText += i.ToString();
+            //        resultText += ": FPS = ";
+            //        resultText += FPSList[i].ToString();
+            //        resultText += ", LT = ";
+            //        // resultText += ResolutionList[i].ToString();
+            //        //resultText += ", ";
+            //        resultText += TimeList[i];
+            //        resultText += "\n";
+
+            //    }
+            //    dataFlag = true;
+            //}
+            //=======================================
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
@@ -1062,7 +1120,7 @@ public class ArcadeCar : MonoBehaviour
         //String formattedTime = "";
         if (startGame & !startRace)
         {
-            changeResolution();
+            //changeResolution();
             countdownTime = doCountdown();
             controlsDisabled = true;
             formattedTime = "";
@@ -1071,12 +1129,15 @@ public class ArcadeCar : MonoBehaviour
         {
             controlsDisabled = false;
             time = 0;
-            //changeLapVariables();
-            lapCount++;
+            changeLapVariables();
+            //lapCount++;
             //Debug.Log(randomizedLapArray[lapCount]);
             //Debug.Log(Application.targetFrameRate);
             startRace = true;
             countdownTime = "";
+            dataFlag = false;
+            resultText = "";
+
         }
         if (startRace) formattedTime = formatTime(getTime());
         //================================================================================================
@@ -1107,6 +1168,7 @@ public class ArcadeCar : MonoBehaviour
         float screenWidth = Screen.width;
         Debug.Log(screenWidth);
         GUI.Box(new Rect(screenWidth * (0.75f), screenHeight * (0.333f), screenWidth / (6.0f), screenHeight / 3), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+        GUI.Box(new Rect(screenWidth * (0.666f), screenHeight * (0.666f), screenWidth / (6.0f), screenHeight / 3), resultText, timerStyle);       
         //====================================================================================================
 
         /*GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
