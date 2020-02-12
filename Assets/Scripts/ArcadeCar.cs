@@ -598,20 +598,6 @@ public class ArcadeCar : MonoBehaviour
     }
 
     //======================code=============================================
-    float bestScore()
-    {
-        float dummy = 9999999999;
-        //make sure there is at least one score
-        if (scoreBoard.Count != 0)
-        {
-            foreach (var x in scoreBoard)
-            {
-                if (x < dummy && x != 0) dummy = x;
-            }
-            return dummy;
-        }
-        else return -1;
-    }
 
     float bestScore0()
     {
@@ -775,7 +761,6 @@ public class ArcadeCar : MonoBehaviour
             startGame = false;
             startRace = false;
             float bestScr = bestScore0();
-            //float bestScr = scoreBoard[0];
             if (bestScr == -1 || time <= bestScr) countdownTime = "HIGH SCORE!";
             else countdownTime = "Good Try!";
             if (!scoreBoard.Contains(time)) TimeList.Add(formatTime(time / 2));
@@ -784,7 +769,7 @@ public class ArcadeCar : MonoBehaviour
             scoreBoard.Sort();
 
             //=============================================
-            if (dataFlag == false)//&& lapCount > 0)//lapCount == lapCount &&
+            if (dataFlag == false)
             {
 
                 for (int i = 0; i < lapCount + 1; i++)
@@ -809,26 +794,6 @@ public class ArcadeCar : MonoBehaviour
         }
         if (startPressed)
         {
-            ////=============================================
-            //if ( dataFlag == false && lapCount >0)//lapCount == lapCount &&
-            //{
-
-            //    for (int i = 0; i < lapCount+1; i++)
-            //    {
-            //        resultText += "Lap ";
-            //        resultText += i.ToString();
-            //        resultText += ": FPS = ";
-            //        resultText += FPSList[i].ToString();
-            //        resultText += ", LT = ";
-            //        // resultText += ResolutionList[i].ToString();
-            //        //resultText += ", ";
-            //        resultText += TimeList[i];
-            //        resultText += "\n";
-
-            //    }
-            //    dataFlag = true;
-            //}
-            //=======================================
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
@@ -1118,9 +1083,10 @@ public class ArcadeCar : MonoBehaviour
         float speed = GetSpeed();
 
         //======================================code=======================================================
-        //String formattedTime = "";
         if (startGame & !startRace)
         {
+            changeLapVariables();
+            //changeResolution();
             resultText = "";
             countdownTime = doCountdown();
             controlsDisabled = true;
@@ -1130,9 +1096,7 @@ public class ArcadeCar : MonoBehaviour
         {
             controlsDisabled = false;
             time = 0;
-            changeLapVariables();
-            //changeResolution();
-            //lapCount++;
+
             //Debug.Log(randomizedLapArray[lapCount]);
             //Debug.Log(Application.targetFrameRate);
             startRace = true;
