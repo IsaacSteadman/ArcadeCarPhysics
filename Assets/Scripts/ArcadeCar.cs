@@ -793,9 +793,10 @@ public class ArcadeCar : MonoBehaviour
                     resultText += i.ToString();
                     resultText += ": FPS = ";
                     resultText += FPSList[i].ToString();
-                    resultText += ", LT = ";
-                    // resultText += ResolutionList[i].ToString();
+                    //resultText += ", Res = ";
+                    //resultText += ResolutionList[i].ToString();
                     //resultText += ", ";
+                    resultText += ", LT = ";
                     resultText += TimeList[i];
                     resultText += "\n";
 
@@ -1120,7 +1121,7 @@ public class ArcadeCar : MonoBehaviour
         //String formattedTime = "";
         if (startGame & !startRace)
         {
-            //changeResolution();
+            resultText = "";
             countdownTime = doCountdown();
             controlsDisabled = true;
             formattedTime = "";
@@ -1130,13 +1131,14 @@ public class ArcadeCar : MonoBehaviour
             controlsDisabled = false;
             time = 0;
             changeLapVariables();
+            //changeResolution();
             //lapCount++;
             //Debug.Log(randomizedLapArray[lapCount]);
             //Debug.Log(Application.targetFrameRate);
             startRace = true;
             countdownTime = "";
             dataFlag = false;
-            resultText = "";
+          
 
         }
         if (startRace) formattedTime = formatTime(getTime());
