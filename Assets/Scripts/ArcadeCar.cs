@@ -15,7 +15,7 @@ public class ArcadeCar : MonoBehaviour
 
     int gKey = 0;
     int hKey = 0;
-    int resolutionMultiple = 120;
+    int resolutionMultiple;
     int q_len = 30;
     public String top5ScoresString;
     public bool forward_pressed = false;
@@ -246,7 +246,7 @@ public class ArcadeCar : MonoBehaviour
     List<float> FPSList = new List<float>();
     List<float> ResolutionList = new List<float>();
     List<string> TimeList = new List<string>();
-    string resultText = "";
+    public string resultText = "";
     //======================================================================================
 
     int lapCount = 0;
@@ -271,10 +271,8 @@ public class ArcadeCar : MonoBehaviour
     {
         if (lapCount <= 6)
         {
-
             switch (randomizedLapArray[lapCount])
             {
-                //control lap
                 case 0:
                     Application.targetFrameRate = 10;// 30;
                     break;
@@ -309,7 +307,6 @@ public class ArcadeCar : MonoBehaviour
         {
             switch (randomizedLapArray[lapCount])
             {
-                //control lap
                 case 0:
                     resolutionMultiple = 12; // 256x144
                     break;
@@ -337,6 +334,7 @@ public class ArcadeCar : MonoBehaviour
             }
         }
         ResolutionList.Add(resolutionMultiple);
+        FPSList.Add(Application.targetFrameRate);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
     }
 
@@ -421,7 +419,7 @@ public class ArcadeCar : MonoBehaviour
 
     void Start()
     {
-        //Screen.SetResolution(1280,720,true);
+        Screen.SetResolution(1280,720,true);
 
         style.normal.textColor = Color.red;
 
@@ -438,7 +436,7 @@ public class ArcadeCar : MonoBehaviour
             Input.gyro.enabled = true;
         }
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 12;
+        Application.targetFrameRate = 30;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass;
     }
@@ -635,7 +633,7 @@ public class ArcadeCar : MonoBehaviour
         }
         else return scoreList;
     }
-    String countdownTime = "";
+    public String countdownTime = "";
     //====================================================================
     bool dataFlag = false;
 
@@ -794,9 +792,8 @@ public class ArcadeCar : MonoBehaviour
                     resultText += i.ToString();
                     resultText += ": FPS = ";
                     resultText += FPSList[i].ToString();
-                    //resultText += ", Res = ";
-                    //resultText += ResolutionList[i].ToString();
-                    //resultText += ", ";
+                    resultText += ", Res = ";
+                    resultText += ResolutionList[i].ToString();
                     resultText += ", LT = ";
                     resultText += TimeList[i];
                     resultText += "\n";
@@ -1102,7 +1099,7 @@ public class ArcadeCar : MonoBehaviour
 
     //==============================================================================================
 
-    String formattedTime = "";
+    public String formattedTime = "";
     void OnGUI()
     {
         if (FINISH_LINE_FLAG)
@@ -1149,8 +1146,8 @@ public class ArcadeCar : MonoBehaviour
         float speedKmH = speed * 3.6f;
 
         //=======================================code=======================================================
-        GUI.Label(new Rect(850.0f, 50.0f, 150, 130), "Lap Time: " + formattedTime, timerStyle);
-        GUI.Label(new Rect(850.0f, 500.0f, 200, 200), countdownTime, countdownStyle);
+        //GUI.Label(new Rect(850.0f, 50.0f, 150, 130), "Lap Time: " + formattedTime, timerStyle);
+        //GUI.Label(new Rect(850.0f, 500.0f, 200, 200), countdownTime, countdownStyle);
 
         top5ScoresString = "";
         List<float> top5Scores = bestScores();
@@ -1165,14 +1162,13 @@ public class ArcadeCar : MonoBehaviour
             }
 
         //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
-        //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
-        //GUI.Box(new Rect(15.0f*resolutionMultiple, 2.5f*resolutionMultiple, resolutionMultiple, resolutionMultiple), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
+        //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);"====== Scoreboard ======\n" + top5ScoresString, timerStyle);
         float screenHeight = Screen.height;
         Debug.Log(screenHeight);
         float screenWidth = Screen.width;
         Debug.Log(screenWidth);
         //GUI.Box(new Rect(screenWidth * (0.75f), screenHeight * (0.333f), screenWidth / (6.0f), screenHeight / 3), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
-        GUI.Box(new Rect(screenWidth * (0.666f), screenHeight * (0.666f), screenWidth / (6.0f), screenHeight / 3), resultText, timerStyle);
+        //GUI.Box(new Rect(screenWidth * (0.666f), screenHeight * (0.666f), screenWidth / (6.0f), screenHeight / 3), resultText, timerStyle);
         //====================================================================================================
 
         /*GUI.Label(new Rect(30.0f, 20.0f, 150, 130), string.Format("{0:F2} km/h", speedKmH), style);
@@ -1206,7 +1202,7 @@ public class ArcadeCar : MonoBehaviour
                     Vector3 wsFrom = (wheelIndex == WHEEL_LEFT_INDEX) ? wsL : wsR;
 
                     Vector3 screenPos = cam.WorldToScreenPoint(wsFrom);
-                    GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 150, 130), wheelData.debugText, style);
+                    //GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 150, 130), wheelData.debugText, style);
                 }
             }
         }

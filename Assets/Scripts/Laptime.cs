@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Scoreboard : MonoBehaviour
+public class Laptime : MonoBehaviour
 {
 
     //public GameObject scorebox;
@@ -23,6 +23,6 @@ public class Scoreboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textbox.text = "======Scoreboard======\n" + car_script.top5ScoresString;
+        textbox.text = "Lap Time: " + car_script.formattedTime;
     }
 }
