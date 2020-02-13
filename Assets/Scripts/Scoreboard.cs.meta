@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0194c457187b67e4d89849597bcd9a7c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - scorebox: {instanceID: 0}
+  - textbox: {instanceID: 0}
+  - car_script: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

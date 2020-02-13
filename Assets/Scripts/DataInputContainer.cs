@@ -1,8 +1,8 @@
 ﻿using System;
 public class DataInputContainer
 {
-    float v;    //
-    float h;    //tilt
+    public float v;    //
+    public float h;    //tilt
 
     public DataInputContainer(float v, float h)
     {
