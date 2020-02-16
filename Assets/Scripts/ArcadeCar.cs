@@ -16,7 +16,9 @@ public class ArcadeCar : MonoBehaviour
     int gKey = 0;
     int hKey = 0;
     int resolutionMultiple;
-    int q_len = 30;
+    int q_len = 1; int q_len_prev = 1;
+    int fps = 30;
+    int fps_var = 0;
     public String top5ScoresString;
     public bool forward_pressed = false;
     public bool reverse_pressed = false;
@@ -161,8 +163,24 @@ public class ArcadeCar : MonoBehaviour
 
     }
 
-
-
+    private System.Random rand = new System.Random();
+    private double NV_MAGICCONST = 4 * Math.Exp(-0.5) / Math.Sqrt(2.0);
+    public double normalRandom(double mu, double sigma)
+    {
+        double u1, u2, z;
+        while (true)
+        {
+            u1 = rand.NextDouble();
+            u2 = 1.0 - rand.NextDouble();
+            z = NV_MAGICCONST * (u1 - 0.5) / u2;
+            double zz = z * z / 4.0;
+            if (zz <= -Math.Log(u2))
+            {
+                break;
+            }
+        }
+        return mu + z * sigma;
+    }
 
 
     public Vector3 centerOfMass = Vector3.zero;
@@ -267,39 +285,39 @@ public class ArcadeCar : MonoBehaviour
         }
         return arr;
     }
-    void changeLapVariables()
+    void changeFPS()
     {
         if (lapCount <= 6)
-        {
             switch (randomizedLapArray[lapCount])
             {
+                //control lap
                 case 0:
-                    Application.targetFrameRate = 10;// 30;
+                    fps = 10;// 30;
                     break;
                 case 1:
-                    Application.targetFrameRate = 10;// 15;
+                    fps = 10;// 15;
                     break;
                 case 2:
-                    Application.targetFrameRate = 10;//20;
+                    fps = 10;//20;
                     break;
                 case 3:
-                    Application.targetFrameRate = 10;//24;
+                    fps = 10;//24;
                     break;
                 case 4:
-                    Application.targetFrameRate = 60;//40;
+                    fps = 10;//40;
                     break;
                 case 5:
-                    Application.targetFrameRate = 60;//50;
+                    fps = 60;//50;
                     break;
                 case 6:
-                    Application.targetFrameRate = 60;//
+                    fps = 60;//
                     break;
                 default:
-                    Application.targetFrameRate = 60;
+                    fps = 60;
                     break;
             }
-            FPSList.Add(Application.targetFrameRate);
-        }
+        Application.targetFrameRate = fps;
+        FPSList.Add(Application.targetFrameRate);
     }
     void changeResolution()
     {
@@ -308,25 +326,25 @@ public class ArcadeCar : MonoBehaviour
             switch (randomizedLapArray[lapCount])
             {
                 case 0:
-                    resolutionMultiple = 12; // 256x144
+                    resolutionMultiple = 12;// 12; // 256x144
                     break;
                 case 1:
-                    resolutionMultiple = 40; // 640x360
+                    resolutionMultiple = 12;// 40; // 640x360
                     break;
                 case 2:
-                    resolutionMultiple = 80; // 1280x720
+                    resolutionMultiple = 12;// 80; // 1280x720
                     break;
                 case 3:
-                    resolutionMultiple = 120; // 1920x1080
+                    resolutionMultiple = 12;// 120; // 1920x1080
                     break;
                 case 4:
-                    resolutionMultiple = 12;
+                    resolutionMultiple = 12;// 12;
                     break;
                 case 5:
-                    resolutionMultiple = 40;
+                    resolutionMultiple = 12;// 40;
                     break;
                 case 6:
-                    resolutionMultiple = 80;
+                    resolutionMultiple = 12;// 80;
                     break;
                 default:
                     resolutionMultiple = 120; // 1920x1080
@@ -334,10 +352,74 @@ public class ArcadeCar : MonoBehaviour
             }
         }
         ResolutionList.Add(resolutionMultiple);
-        FPSList.Add(Application.targetFrameRate);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
     }
 
+    void changeLatency()
+    {
+        if (lapCount <= 6)
+            switch (randomizedLapArray[lapCount])
+            {
+                //control lap
+                case 0:
+                    q_len = 1;
+                    break;
+                case 1:
+                    q_len = 2;
+                    break;
+                case 2:
+                    q_len = 4;
+                    break;
+                case 3:
+                    q_len = 6;
+                    break;
+                case 4:
+                    q_len = 8;
+                    break;
+                case 5:
+                    q_len = 13;
+                    break;
+                case 6:
+                    q_len = 30;
+                    break;
+                default:
+                    q_len = 1;
+                    break;
+            }
+    }
+
+    void changeStability()
+    {
+        if (lapCount <= 6)
+            switch (randomizedLapArray[lapCount])
+            {
+                //control lap
+                case 0:
+                    fps_var = 60;
+                    break;
+                case 1:
+                    fps_var = 60;
+                    break;
+                case 2:
+                    fps_var = 60;
+                    break;
+                case 3:
+                    fps_var = 60;
+                    break;
+                case 4:
+                    fps_var = 60;
+                    break;
+                case 5:
+                    fps_var = 60;
+                    break;
+                case 6:
+                    fps_var = 60;
+                    break;
+                default:
+                    fps_var = 0;
+                    break;
+            }
+    }
     // UI style for debug render
     static GUIStyle style = new GUIStyle();
 
@@ -662,14 +744,18 @@ public class ArcadeCar : MonoBehaviour
             {
                 h = Input.acceleration.x * 12;
             }
-
-            /*input_queue.Enqueue(new DataInputContainer(v, h));
+            //Implements Latency with q_len size buffer
+            input_queue.Enqueue(new DataInputContainer(v, h));
             if (input_queue.Count >= q_len)
             {
                 DataInputContainer input = input_queue.Dequeue();
                 v = input.v;
                 h = input.h;
-            }*/
+            }
+
+            int shakiness = (int)normalRandom(fps, fps_var);
+            Application.targetFrameRate = shakiness;            // stability shakiness
+            Debug.Log("shakiness = " + shakiness);
 
             Touch[] myTouches = Input.touches;
         }
@@ -1123,7 +1209,10 @@ public class ArcadeCar : MonoBehaviour
             countdownTime = doCountdown();
             controlsDisabled = true;
             formattedTime = "";
-            changeResolution();
+            //changeResolution();
+            //changeFPS();
+            //changeLatency();
+            changeStability();
         }
         if (countdownTime == "-1")
         {
