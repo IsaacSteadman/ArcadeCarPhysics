@@ -15,7 +15,7 @@ public class ArcadeCar : MonoBehaviour
 
     int gKey = 0;
     int hKey = 0;
-    int resolutionMultiple;
+    int resolutionMultiple = 80;
     int q_len = 1; int q_len_prev = 1;
     int fps = 30;
     int fps_var = 0;
@@ -285,141 +285,238 @@ public class ArcadeCar : MonoBehaviour
         }
         return arr;
     }
-    void changeFPS()
+
+    void changeLapVariables()
     {
         if (lapCount <= 6)
             switch (randomizedLapArray[lapCount])
             {
-                //control lap
+                //fps
                 case 0:
-                    fps = 10;// 30;
+                    fps = 15;  resolutionMultiple = 80; q_len = 1; fps_var = 0; 
                     break;
                 case 1:
-                    fps = 10;// 15;
+                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0; 
                     break;
                 case 2:
-                    fps = 10;//20;
+                    fps = 25; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 3:
-                    fps = 10;//24;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0; 
                     break;
                 case 4:
-                    fps = 10;//40;
+                    fps = 45; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 5:
-                    fps = 60;//50;
+                    fps = 60; resolutionMultiple = 80; q_len = 1; fps_var = 0; 
                     break;
+
+                //resolution
                 case 6:
-                    fps = 60;//
+                    fps = 30; resolutionMultiple = 20; q_len = 1; fps_var = 0;
                     break;
+                case 7:
+                    fps = 30; resolutionMultiple = 30; q_len = 1; fps_var = 0;
+                    break;
+                case 8:
+                    fps = 30; resolutionMultiple = 40; q_len = 1; fps_var = 0;
+                    break;
+                case 9:
+                    fps = 30; resolutionMultiple = 60; q_len = 1; fps_var = 0;
+                    break;
+                case 10:
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0; // 1280x720
+                    break;
+                case 11:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1920x1080
+                    break;
+
+                //latency 
+                case 12:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
+                    break;
+                case 13:
+                    fps = 30; resolutionMultiple = 120; q_len = 3; fps_var = 0;
+                    break;
+                case 14:
+                    fps = 30; resolutionMultiple = 120; q_len = 5; fps_var = 0;
+                    break;
+                case 15:
+                    fps = 30; resolutionMultiple = 120; q_len = 7; fps_var = 0;
+                    break;
+                case 16:
+                    fps = 30; resolutionMultiple = 120; q_len = 11; fps_var = 0;
+                    break;
+                case 17:
+                    fps = 30; resolutionMultiple = 120; q_len = 15; fps_var = 0;
+                    break;
+
+                //stability
+                case 18:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
+                    break;
+                case 19:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 3;
+                    break;
+                case 20:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 7;
+                    break;
+                case 21:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 10;
+                    break;
+                case 22:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 15;
+                    break;
+                case 23:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 20;
+                    break;
+
+
                 default:
-                    fps = 60;
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
                     break;
             }
+
         Application.targetFrameRate = fps;
         FPSList.Add(Application.targetFrameRate);
-    }
-    void changeResolution()
-    {
-        if (lapCount <= 6)
-        {
-            switch (randomizedLapArray[lapCount])
-            {
-                case 0:
-                    resolutionMultiple = 12;// 12; // 256x144
-                    break;
-                case 1:
-                    resolutionMultiple = 12;// 40; // 640x360
-                    break;
-                case 2:
-                    resolutionMultiple = 12;// 80; // 1280x720
-                    break;
-                case 3:
-                    resolutionMultiple = 12;// 120; // 1920x1080
-                    break;
-                case 4:
-                    resolutionMultiple = 12;// 12;
-                    break;
-                case 5:
-                    resolutionMultiple = 12;// 40;
-                    break;
-                case 6:
-                    resolutionMultiple = 12;// 80;
-                    break;
-                default:
-                    resolutionMultiple = 120; // 1920x1080
-                    break;
-            }
-        }
         ResolutionList.Add(resolutionMultiple);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
     }
+    //void changeFPS()
+    //{
+    //    if (lapCount <= 6)
+    //        switch (randomizedLapArray[lapCount])
+    //        {
+    //            //control lap
+    //            case 0:
+    //                fps = 10;// 30;
+    //                break;
+    //            case 1:
+    //                fps = 10;// 15;
+    //                break;
+    //            case 2:
+    //                fps = 10;//20;
+    //                break;
+    //            case 3:
+    //                fps = 10;//24;
+    //                break;
+    //            case 4:
+    //                fps = 10;//40;
+    //                break;
+    //            case 5:
+    //                fps = 60;//50;
+    //                break;
+    //            case 6:
+    //                fps = 60;//
+    //                break;
+    //            default:
+    //                fps = 60;
+    //                break;
+    //        }
+    //    Application.targetFrameRate = fps;
+    //    FPSList.Add(Application.targetFrameRate);
+    //}
+    //void changeResolution()
+    //{
+    //    if (lapCount <= 6)
+    //    {
+    //        switch (randomizedLapArray[lapCount])
+    //        {
+    //            case 0:
+    //                resolutionMultiple = 12;// 12; // 256x144
+    //                break;
+    //            case 1:
+    //                resolutionMultiple = 12;// 40; // 640x360
+    //                break;
+    //            case 2:
+    //                resolutionMultiple = 12;// 80; // 1280x720
+    //                break;
+    //            case 3:
+    //                resolutionMultiple = 12;// 120; // 1920x1080
+    //                break;
+    //            case 4:
+    //                resolutionMultiple = 12;// 12;
+    //                break;
+    //            case 5:
+    //                resolutionMultiple = 12;// 40;
+    //                break;
+    //            case 6:
+    //                resolutionMultiple = 12;// 80;
+    //                break;
+    //            default:
+    //                resolutionMultiple = 120; // 1920x1080
+    //                break;
+    //        }
+    //    }
+    //    ResolutionList.Add(resolutionMultiple);
+    //    Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
+    //}
 
-    void changeLatency()
-    {
-        if (lapCount <= 6)
-            switch (randomizedLapArray[lapCount])
-            {
-                //control lap
-                case 0:
-                    q_len = 1;
-                    break;
-                case 1:
-                    q_len = 2;
-                    break;
-                case 2:
-                    q_len = 4;
-                    break;
-                case 3:
-                    q_len = 6;
-                    break;
-                case 4:
-                    q_len = 8;
-                    break;
-                case 5:
-                    q_len = 13;
-                    break;
-                case 6:
-                    q_len = 30;
-                    break;
-                default:
-                    q_len = 1;
-                    break;
-            }
-    }
+    //void changeLatency()
+    //{
+    //    if (lapCount <= 6)
+    //        switch (randomizedLapArray[lapCount])
+    //        {
+    //            //control lap
+    //            case 0:
+    //                q_len = 1;
+    //                break;
+    //            case 1:
+    //                q_len = 2;
+    //                break;
+    //            case 2:
+    //                q_len = 4;
+    //                break;
+    //            case 3:
+    //                q_len = 6;
+    //                break;
+    //            case 4:
+    //                q_len = 8;
+    //                break;
+    //            case 5:
+    //                q_len = 13;
+    //                break;
+    //            case 6:
+    //                q_len = 30;
+    //                break;
+    //            default:
+    //                q_len = 1;
+    //                break;
+    //        }
+    //}
 
-    void changeStability()
-    {
-        if (lapCount <= 6)
-            switch (randomizedLapArray[lapCount])
-            {
-                //control lap
-                case 0:
-                    fps_var = 60;
-                    break;
-                case 1:
-                    fps_var = 60;
-                    break;
-                case 2:
-                    fps_var = 60;
-                    break;
-                case 3:
-                    fps_var = 60;
-                    break;
-                case 4:
-                    fps_var = 60;
-                    break;
-                case 5:
-                    fps_var = 60;
-                    break;
-                case 6:
-                    fps_var = 60;
-                    break;
-                default:
-                    fps_var = 0;
-                    break;
-            }
-    }
+    //void changeStability()
+    //{
+    //    if (lapCount <= 6)
+    //        switch (randomizedLapArray[lapCount])
+    //        {
+    //            //control lap
+    //            case 0:
+    //                fps_var = 60;
+    //                break;
+    //            case 1:
+    //                fps_var = 60;
+    //                break;
+    //            case 2:
+    //                fps_var = 60;
+    //                break;
+    //            case 3:
+    //                fps_var = 60;
+    //                break;
+    //            case 4:
+    //                fps_var = 60;
+    //                break;
+    //            case 5:
+    //                fps_var = 60;
+    //                break;
+    //            case 6:
+    //                fps_var = 60;
+    //                break;
+    //            default:
+    //                fps_var = 0;
+    //                break;
+    //        }
+    //}
     // UI style for debug render
     static GUIStyle style = new GUIStyle();
 
@@ -493,7 +590,7 @@ public class ArcadeCar : MonoBehaviour
             axles[axleIndex].steerAngle = 0.0f;
         }
 
-        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6 };
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
         randomizedLapArray = Randomize(tempArray);
 
         Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
@@ -753,7 +850,7 @@ public class ArcadeCar : MonoBehaviour
                 h = input.h;
             }
 
-            int shakiness = (int)normalRandom(fps, fps_var);
+            int shakiness = Math.Max(1,Math.Min(60,(int)normalRandom(fps, fps_var)));
             Application.targetFrameRate = shakiness;            // stability shakiness
             Debug.Log("shakiness = " + shakiness);
 
@@ -1209,10 +1306,11 @@ public class ArcadeCar : MonoBehaviour
             countdownTime = doCountdown();
             controlsDisabled = true;
             formattedTime = "";
+            changeLapVariables();
             //changeResolution();
             //changeFPS();
             //changeLatency();
-            changeStability();
+            //changeStability();
         }
         if (countdownTime == "-1")
         {
