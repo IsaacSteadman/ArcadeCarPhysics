@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-
+using System.IO;
 
 public class ArcadeCar : MonoBehaviour
 {
@@ -25,6 +25,10 @@ public class ArcadeCar : MonoBehaviour
     private Queue<DataInputContainer> input_queue = new Queue<DataInputContainer>();
     public bool reset_pressed = false;
     public bool start_pressed = false;
+
+    int prevLap = -1;
+    StreamWriter writer;
+    
 
 
     public class WheelData
@@ -288,7 +292,8 @@ public class ArcadeCar : MonoBehaviour
 
     void changeLapVariables()
     {
-        if (lapCount <= 6)
+        if (lapCount < randomizedLapArray.Length)
+        {
             switch (randomizedLapArray[lapCount])
             {
                 //fps
@@ -376,11 +381,52 @@ public class ArcadeCar : MonoBehaviour
                     fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
                     break;
             }
+            if (lapCount != prevLap)
+            {
+                prevLap = lapCount;
+                initLog();
+                if (writer != null)
+                {
+                    writer.WriteLine(string.Format("Reset (LAP {4}) fps = {0}; resolutionMultiple = {1}, q_len = {2}, fps_var = {3}", fps, resolutionMultiple, q_len, fps_var, lapCount));
+                    writer.Flush();
+                }
+                else
+                {
+                    Debug.Log("Could not writer to the writer");
+                }
+            }
+        }
 
         Application.targetFrameRate = fps;
-        FPSList.Add(Application.targetFrameRate);
-        ResolutionList.Add(resolutionMultiple);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
+
+
+        string resString = "";
+        resString += (16 * resolutionMultiple).ToString() + " x " + (9 * resolutionMultiple).ToString();
+        if (lapCount == ResolutionList.Count) ResolutionList.Add(resString);
+        if (lapCount == FPSList.Count) FPSList.Add(Application.targetFrameRate);
+        if (lapCount == LatencyList.Count) LatencyList.Add(q_len);
+        if (lapCount == StabilityList.Count) StabilityList.Add(fps_var);
+
+
+    }
+
+    void initLog() {
+        if (writer == null)
+        {
+            try
+            {
+                String settingsLogPath = Application.persistentDataPath + "/settingsLog.txt";
+                Debug.Log("logging path: " + settingsLogPath);
+                writer = new StreamWriter(settingsLogPath, true);
+                writer.WriteLine("".PadLeft(80, '='));
+                writer.WriteLine("Starting a new Log");
+                writer.Flush();
+            } catch (Exception exc)
+            {
+                Debug.Log(exc.StackTrace);
+            }
+        }
     }
     //void changeFPS()
     //{
