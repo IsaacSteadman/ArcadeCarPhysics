@@ -23,6 +23,6 @@ public class Laptime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textbox.text = "Lap Time: " + car_script.formattedTime;
+        textbox.text = "Time: " + car_script.formattedTime;
     }
 }
