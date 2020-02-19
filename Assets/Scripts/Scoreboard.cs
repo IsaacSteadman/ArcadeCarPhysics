@@ -23,6 +23,6 @@ public class Scoreboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textbox.text = "======Scoreboard======\n" + car_script.top5ScoresString;
+        textbox.text = "Scoreboard \n" + car_script.top5ScoresString;
     }
 }

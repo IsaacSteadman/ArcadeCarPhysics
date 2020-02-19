@@ -400,6 +400,8 @@ public class ArcadeCar : MonoBehaviour
         }
 
         Application.targetFrameRate = fps;
+        FPSList.Add(Application.targetFrameRate);
+        ResolutionList.Add(resolutionMultiple);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
 
         string resString = "";
@@ -1376,7 +1378,7 @@ public class ArcadeCar : MonoBehaviour
         if (top5Scores.Count == 0) top5ScoresString = "N/A";
         else foreach (var x in top5Scores)
             {
-                top5ScoresString += String.Format("#{0} == ", count);
+                top5ScoresString += String.Format("#{0}    ", count);
                 count++;
                 top5ScoresString += formatTime(x / 2);
                 top5ScoresString += "\n";
