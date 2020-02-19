@@ -262,7 +262,7 @@ public class ArcadeCar : MonoBehaviour
 
 
     List<float> FPSList = new List<float>();
-    List<float> ResolutionList = new List<float>();
+    List<string> ResolutionList = new List<string>();
     List<string> TimeList = new List<string>();
     public string resultText = "";
     //======================================================================================
@@ -378,9 +378,13 @@ public class ArcadeCar : MonoBehaviour
             }
 
         Application.targetFrameRate = fps;
-        FPSList.Add(Application.targetFrameRate);
-        ResolutionList.Add(resolutionMultiple);
+        if (lapCount == FPSList.Count) FPSList.Add(Application.targetFrameRate);
+
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
+        string resString = "";
+        resString += (16 * resolutionMultiple).ToString() + " x " + (9 * resolutionMultiple).ToString();
+        if (lapCount == ResolutionList.Count) ResolutionList.Add(resString);
+
     }
     //void changeFPS()
     //{
@@ -414,31 +418,31 @@ public class ArcadeCar : MonoBehaviour
     //                break;
     //        }
     //    Application.targetFrameRate = fps;
-    //    FPSList.Add(Application.targetFrameRate);
+    //    if (lapCount == FPSList.Count) FPSList.Add(Application.targetFrameRate);
     //}
     //void changeResolution()
     //{
     //    if (lapCount <= 6)
-    //    {
+    //    //{
     //        switch (randomizedLapArray[lapCount])
     //        {
     //            case 0:
     //                resolutionMultiple = 12;// 12; // 256x144
     //                break;
     //            case 1:
-    //                resolutionMultiple = 12;// 40; // 640x360
+    //                resolutionMultiple = 120;// 40; // 640x360
     //                break;
     //            case 2:
     //                resolutionMultiple = 12;// 80; // 1280x720
     //                break;
     //            case 3:
-    //                resolutionMultiple = 12;// 120; // 1920x1080
+    //                resolutionMultiple = 120;// 120; // 1920x1080
     //                break;
     //            case 4:
     //                resolutionMultiple = 12;// 12;
     //                break;
     //            case 5:
-    //                resolutionMultiple = 12;// 40;
+    //                resolutionMultiple = 120;// 40;
     //                break;
     //            case 6:
     //                resolutionMultiple = 12;// 80;
@@ -447,9 +451,13 @@ public class ArcadeCar : MonoBehaviour
     //                resolutionMultiple = 120; // 1920x1080
     //                break;
     //        }
-    //    }
-    //    ResolutionList.Add(resolutionMultiple);
+    //    //}
+    //    string resString = "";
+    //    resString += (16 * resolutionMultiple).ToString() + " x " + (9 * resolutionMultiple).ToString();
+
     //    Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
+    //    if (lapCount == ResolutionList.Count) ResolutionList.Add(resString);
+
     //}
 
     //void changeLatency()
@@ -590,16 +598,18 @@ public class ArcadeCar : MonoBehaviour
             axles[axleIndex].steerAngle = 0.0f;
         }
 
-        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
-        randomizedLapArray = Randomize(tempArray);
+        ///int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+        //randomizedLapArray = Randomize(tempArray);
 
         Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
     }
 
     void Start()
     {
-        Screen.SetResolution(1280, 720, true);
-
+        //Screen.SetResolution(1280, 720, true);
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+        //int[] tempArray = { 0, 1, 2, 3, 4, 5};
+        randomizedLapArray = Randomize(tempArray);
         style.normal.textColor = Color.red;
 
         //=====================code====================================================
@@ -966,7 +976,7 @@ public class ArcadeCar : MonoBehaviour
             scoreBoard.Sort();
 
             //=============================================
-            if (dataFlag == false)//&& lapCount > 0)//lapCount == lapCount &&
+            if (dataFlag == false)
             {
 
                 for (int i = 0; i < lapCount + 1; i++)
@@ -976,7 +986,7 @@ public class ArcadeCar : MonoBehaviour
                     resultText += ": FPS = ";
                     resultText += FPSList[i].ToString();
                     resultText += ", Res = ";
-                    resultText += ResolutionList[i].ToString();
+                    resultText += ResolutionList[i];
                     resultText += ", LT = ";
                     resultText += TimeList[i];
                     resultText += "\n";
@@ -990,26 +1000,6 @@ public class ArcadeCar : MonoBehaviour
         }
         if (startPressed)
         {
-            ////=============================================
-            //if ( dataFlag == false && lapCount >0)//lapCount == lapCount &&
-            //{
-
-            //    for (int i = 0; i < lapCount+1; i++)
-            //    {
-            //        resultText += "Lap ";
-            //        resultText += i.ToString();
-            //        resultText += ": FPS = ";
-            //        resultText += FPSList[i].ToString();
-            //        resultText += ", LT = ";
-            //        // resultText += ResolutionList[i].ToString();
-            //        //resultText += ", ";
-            //        resultText += TimeList[i];
-            //        resultText += "\n";
-
-            //    }
-            //    dataFlag = true;
-            //}
-            //=======================================
             FINISH_LINE_FLAG = false;
             time = 0;
             startGame = true;
@@ -1316,9 +1306,6 @@ public class ArcadeCar : MonoBehaviour
         {
             controlsDisabled = false;
             time = 0;
-            //changeLapVariables();
-            //changeResolution();
-            //lapCount++;
             //Debug.Log(randomizedLapArray[lapCount]);
             //Debug.Log(Application.targetFrameRate);
             startRace = true;
