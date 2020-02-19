@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -293,22 +293,22 @@ public class ArcadeCar : MonoBehaviour
             {
                 //fps
                 case 0:
-                    fps = 15;  resolutionMultiple = 80; q_len = 1; fps_var = 0; 
+                    fps = 15; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 1:
-                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0; 
+                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 2:
                     fps = 25; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 3:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0; 
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 4:
                     fps = 45; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 5:
-                    fps = 60; resolutionMultiple = 80; q_len = 1; fps_var = 0; 
+                    fps = 60; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
 
                 //resolution
@@ -590,7 +590,7 @@ public class ArcadeCar : MonoBehaviour
             axles[axleIndex].steerAngle = 0.0f;
         }
 
-        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
         randomizedLapArray = Randomize(tempArray);
 
         Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
@@ -598,7 +598,7 @@ public class ArcadeCar : MonoBehaviour
 
     void Start()
     {
-        Screen.SetResolution(1280,720,true);
+        Screen.SetResolution(1280, 720, true);
 
         style.normal.textColor = Color.red;
 
@@ -850,7 +850,7 @@ public class ArcadeCar : MonoBehaviour
                 h = input.h;
             }
 
-            int shakiness = Math.Max(1,Math.Min(60,(int)normalRandom(fps, fps_var)));
+            int shakiness = Math.Max(1, Math.Min(60, (int)normalRandom(fps, fps_var)));
             Application.targetFrameRate = shakiness;            // stability shakiness
             Debug.Log("shakiness = " + shakiness);
 
