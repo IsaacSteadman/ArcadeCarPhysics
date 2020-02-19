@@ -398,6 +398,8 @@ public class ArcadeCar : MonoBehaviour
         }
 
         Application.targetFrameRate = fps;
+        FPSList.Add(Application.targetFrameRate);
+        ResolutionList.Add(resolutionMultiple);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
 
 
