@@ -263,6 +263,8 @@ public class ArcadeCar : MonoBehaviour
 
     List<float> FPSList = new List<float>();
     List<string> ResolutionList = new List<string>();
+    List<float> LatencyList = new List<float>();
+    List<float> StabilityList = new List<float>();
     List<string> TimeList = new List<string>();
     public string resultText = "";
     //======================================================================================
@@ -378,12 +380,16 @@ public class ArcadeCar : MonoBehaviour
             }
 
         Application.targetFrameRate = fps;
-        if (lapCount == FPSList.Count) FPSList.Add(Application.targetFrameRate);
-
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
+
+
         string resString = "";
         resString += (16 * resolutionMultiple).ToString() + " x " + (9 * resolutionMultiple).ToString();
         if (lapCount == ResolutionList.Count) ResolutionList.Add(resString);
+        if (lapCount == FPSList.Count) FPSList.Add(Application.targetFrameRate);
+        if (lapCount == LatencyList.Count) LatencyList.Add(q_len);
+        if (lapCount == StabilityList.Count) StabilityList.Add(fps_var);
+
 
     }
     //void changeFPS()
@@ -983,10 +989,19 @@ public class ArcadeCar : MonoBehaviour
                 {
                     resultText += "Lap ";
                     resultText += i.ToString();
+
                     resultText += ": FPS = ";
                     resultText += FPSList[i].ToString();
+
                     resultText += ", Res = ";
                     resultText += ResolutionList[i];
+
+                    resultText += ", Latency = ";
+                    resultText += LatencyList[i].ToString();
+
+                    resultText += ", Stability = ";
+                    resultText += StabilityList[i].ToString();
+
                     resultText += ", LT = ";
                     resultText += TimeList[i];
                     resultText += "\n";
