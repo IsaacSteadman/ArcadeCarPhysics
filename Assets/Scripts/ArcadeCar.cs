@@ -538,20 +538,20 @@ public class ArcadeCar : MonoBehaviour
             //Debug.Log("LEFT WHEEL STUFF");
             //Debug.Log("Left Wheel Position X:" + axle.wheelVisualLeft.transform.position.x);
             //Debug.Log("Left Wheel Position Y:" + axle.wheelVisualLeft.transform.position.y);
-            Debug.Log("Left Wheel Position Z:" + axle.wheelVisualLeft.transform.position.z);
+            //Debug.Log("Left Wheel Position Z:" + axle.wheelVisualLeft.transform.position.z);
 
-            Debug.Log("=======================================================");
+            //Debug.Log("=======================================================");
 
             //Debug.Log("RIGHT WHEEL STUFF");
             //Debug.Log("Right Wheel Position X:" + axle.wheelVisualRight.transform.position.x);
             //Debug.Log("Right Wheel Position Y:" + axle.wheelVisualRight.transform.position.y);
-            Debug.Log("Right Wheel Position Z:" + axle.wheelVisualRight.transform.position.z);
+            //Debug.Log("Right Wheel Position Z:" + axle.wheelVisualRight.transform.position.z);
             //Debug.Log("Right Wheel Position:" + axle.wheelVisualRight.transform.position.x);
 
-            if ((axle.wheelVisualLeft.transform.position.z > -214) && (axle.wheelVisualRight.transform.position.z < -196) &&
-                (axle.wheelVisualLeft.transform.position.x < 366) && (axle.wheelVisualRight.transform.position.x < 366))
+            if ((axle.wheelVisualLeft.transform.position.z > -220) && (axle.wheelVisualRight.transform.position.z < -196) &&
+                (axle.wheelVisualLeft.transform.position.x < 357) && (axle.wheelVisualRight.transform.position.x < 357))
             {
-                Debug.Log("PLACE MESSAGE HERE");
+                //Debug.Log("PLACE MESSAGE HERE");
                 FINISH_LINE_FLAG = true;
 
             }
