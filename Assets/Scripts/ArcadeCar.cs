@@ -400,8 +400,6 @@ public class ArcadeCar : MonoBehaviour
         }
 
         Application.targetFrameRate = fps;
-        FPSList.Add(Application.targetFrameRate);
-        ResolutionList.Add(resolutionMultiple);
         Screen.SetResolution(16 * resolutionMultiple, 9 * resolutionMultiple, true);
 
         string resString = "";
@@ -1027,7 +1025,7 @@ public class ArcadeCar : MonoBehaviour
                     resultText += ": FPS = ";
                     resultText += FPSList[i].ToString();
                     resultText += ", Res = ";
-                    resultText += ResolutionList[i].ToString();
+                    resultText += ResolutionList[i];
                     resultText += ", Latency = ";
                     resultText += LatencyList[i].ToString();
                     resultText += ", Stability = ";
