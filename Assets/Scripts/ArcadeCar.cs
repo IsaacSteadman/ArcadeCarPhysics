@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -338,49 +338,49 @@ public class ArcadeCar : MonoBehaviour
                     fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1920x1080
                     break;
 
-                //latency 
+                //latency
                 case 12:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 13:
-                    fps = 30; resolutionMultiple = 120; q_len = 3; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 5; fps_var = 0;
                     break;
                 case 14:
-                    fps = 30; resolutionMultiple = 120; q_len = 5; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 10; fps_var = 0;
                     break;
                 case 15:
-                    fps = 30; resolutionMultiple = 120; q_len = 7; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 15; fps_var = 0;
                     break;
                 case 16:
-                    fps = 30; resolutionMultiple = 120; q_len = 11; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 20; fps_var = 0;
                     break;
                 case 17:
-                    fps = 30; resolutionMultiple = 120; q_len = 15; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 30; fps_var = 0;
                     break;
 
                 //stability
                 case 18:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 19:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 3;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 3;
                     break;
                 case 20:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 7;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 7;
                     break;
                 case 21:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 10;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 10;
                     break;
                 case 22:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 15;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 15;
                     break;
                 case 23:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 20;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 20;
                     break;
 
 
                 default:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0;
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
             }
             if (lapCount != prevLap)
@@ -615,7 +615,7 @@ public class ArcadeCar : MonoBehaviour
     {
         if (is_absolute)
         {
-            position = new Vector3(361, 4, -95);
+            position = new Vector3(15, 10, 410);
         }
         else
         {
@@ -940,10 +940,10 @@ public class ArcadeCar : MonoBehaviour
         {
 
             //====================code========================================
-            time = 0;
+            /*time = 0;
             startGame = false;
             startRace = false;
-            scoreBoard.Clear();
+            scoreBoard.Clear();*/
             //============================================================
 
 

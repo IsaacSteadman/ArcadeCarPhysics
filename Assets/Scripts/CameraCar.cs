@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CameraCar : MonoBehaviour
 {
@@ -31,7 +32,6 @@ public class CameraCar : MonoBehaviour
         {
             carComponent = target.GetComponent<ArcadeCar>();
         }
-
         curPos = transform.position;
     }
 
@@ -56,6 +56,16 @@ public class CameraCar : MonoBehaviour
         {
             yaw = 180.0f;
         }
+
+        /*Vector3 carPos = target.transform.position;
+        Quaternion q = target.transform.rotation;
+        double car_yaw = Math.Atan2(2.0*(q.y*q.z + q.w*q.x), q.w*q.w - q.x*q.x - q.y*q.y + q.z*q.z);
+        Debug.Log("car_yaw: " + car_yaw);
+        transform.rotation = Quaternion.Euler(0,(float)(car_yaw*180/Math.PI),0);
+        carPos.y += cameraHeightOffset;
+        transform.position = carPos;*/
+        //transform.rotation = target.transform.rotation;
+        //curPos.y = target.transform.position.y + cameraHeightOffset;
 
 
         //float limitDegrees = steerAngleLimit.Evaluate(speedKmH);
