@@ -294,90 +294,79 @@ public class ArcadeCar : MonoBehaviour
 
     void changeLapVariables()
     {
+        lapCount = 13;
         if (lapCount < randomizedLapArray.Length)
         {
             switch (randomizedLapArray[lapCount])
             {
                 //fps
                 case 0:
-                    fps = 15; resolutionMultiple = 80; q_len = 1; fps_var = 0;
+                    fps = 10; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 1:
-                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0;
+                    fps = 15; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 2:
-                    fps = 25; resolutionMultiple = 80; q_len = 1; fps_var = 0;
+                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 3:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 4:
-                    fps = 45; resolutionMultiple = 80; q_len = 1; fps_var = 0;
-                    break;
-                case 5:
                     fps = 60; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
 
+
                 //resolution
-                case 6:
+                case 5:
                     fps = 30; resolutionMultiple = 20; q_len = 1; fps_var = 0;
                     break;
-                case 7:
-                    fps = 30; resolutionMultiple = 30; q_len = 1; fps_var = 0;
-                    break;
-                case 8:
+                case 6:
                     fps = 30; resolutionMultiple = 40; q_len = 1; fps_var = 0;
                     break;
-                case 9:
+                case 7:
                     fps = 30; resolutionMultiple = 60; q_len = 1; fps_var = 0;
                     break;
-                case 10:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0; // 1280x720
+                case 8:
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
-                case 11:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1920x1080
+                case 9:
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1280x720
                     break;
 
                 //latency
-                case 12:
+                case 10:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
-                case 13:
+                case 11:
                     fps = 30; resolutionMultiple = 80; q_len = 5; fps_var = 0;
                     break;
-                case 14:
+                case 12:
                     fps = 30; resolutionMultiple = 80; q_len = 10; fps_var = 0;
                     break;
-                case 15:
+                case 13:
                     fps = 30; resolutionMultiple = 80; q_len = 15; fps_var = 0;
                     break;
-                case 16:
+                case 14:
                     fps = 30; resolutionMultiple = 80; q_len = 20; fps_var = 0;
-                    break;
-                case 17:
-                    fps = 30; resolutionMultiple = 80; q_len = 30; fps_var = 0;
                     break;
 
                 //stability
-                case 18:
+                case 15:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
-                case 19:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 3;
-                    break;
-                case 20:
+                case 16:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 7;
                     break;
-                case 21:
+                case 17:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 10;
                     break;
-                case 22:
+                case 18:
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 12;
+                    break;
+                case 19:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 15;
                     break;
-                case 23:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 20;
-                    break;
-
 
                 default:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
@@ -386,6 +375,7 @@ public class ArcadeCar : MonoBehaviour
             if (lapCount != prevLap)
             {
                 prevLap = lapCount;
+                input_queue.Clear();
                 initLog();
                 if (writer != null)
                 {
