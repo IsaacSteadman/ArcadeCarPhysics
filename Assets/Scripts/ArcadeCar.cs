@@ -294,7 +294,6 @@ public class ArcadeCar : MonoBehaviour
 
     void changeLapVariables()
     {
-        lapCount = 13;
         if (lapCount < randomizedLapArray.Length)
         {
             switch (randomizedLapArray[lapCount])
