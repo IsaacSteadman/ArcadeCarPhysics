@@ -261,6 +261,7 @@ public class ArcadeCar : MonoBehaviour
     bool startGame = false;
     bool startRace = false;
     bool controlsDisabled = false;
+    bool rageQuitFlag = true;
     public float time;
     List<float> scoreBoard = new List<float>();
 
@@ -636,7 +637,7 @@ public class ArcadeCar : MonoBehaviour
     void Start()
     {
         Screen.SetResolution(1280, 720, true);
-        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
         randomizedLapArray = Randomize(tempArray);
         style.normal.textColor = Color.red;
 
@@ -1337,18 +1338,22 @@ public class ArcadeCar : MonoBehaviour
         }
         if (countdownTime == "-1")
         {
+            rageQuitFlag = true;
             controlsDisabled = false;
             time = 0;
-            //changeLapVariables();
-            //changeResolution();
-            //lapCount++;
             //Debug.Log(randomizedLapArray[lapCount]);
             //Debug.Log(Application.targetFrameRate);
             startRace = true;
             countdownTime = "";
             dataFlag = false;
-
-
+        }
+        else if (FINISH_LINE_FLAG == false & rageQuitFlag == true & startRace == true & start_pressed == true)
+        {
+            lapCount++;
+            startGame = false;
+            startRace = false;
+            rageQuitFlag = false;
+            TimeList.Add("N/A");
         }
         if (startRace) formattedTime = formatTime(getTime());
         //================================================================================================
