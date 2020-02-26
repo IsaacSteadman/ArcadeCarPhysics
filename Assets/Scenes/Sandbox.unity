@@ -6956,6 +6956,7 @@ MonoBehaviour:
     handBrakeSlipperyK: 0.2
   time: 0
   resultText: 
+  lapCount: 0
   countdownTime: 
   formattedTime: 
 --- !u!54 &329858646
@@ -7893,7 +7894,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.909804, g: 0.91372555, b: 0.3372549, a: 1}
+  m_Color: {r: 0.9607844, g: 0.9607844, b: 0.9607844, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -7901,9 +7902,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
-    m_FontStyle: 0
+    m_Font: {fileID: 12800000, guid: 3981ec9589ea24ff1872865946437205, type: 3}
+    m_FontSize: 17
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 40
@@ -9743,6 +9744,7 @@ MonoBehaviour:
     handBrakeSlipperyK: 0.2
   time: 0
   resultText: 
+  lapCount: 0
   countdownTime: 
   formattedTime: 
 --- !u!54 &446176122
@@ -21888,6 +21890,7 @@ MonoBehaviour:
     handBrakeSlipperyK: 0.1
   time: 0
   resultText: 
+  lapCount: 0
   countdownTime: 
   formattedTime: 
 --- !u!1 &904532266 stripped

@@ -23,6 +23,6 @@ public class Results : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textbox.text = car_script.resultText;
+        textbox.text = "Lap number: " + (car_script.lapCount+1).ToString();
     }
 }

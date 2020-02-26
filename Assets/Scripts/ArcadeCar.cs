@@ -25,7 +25,7 @@ public class ArcadeCar : MonoBehaviour
     private Queue<DataInputContainer> input_queue = new Queue<DataInputContainer>();
     public bool reset_pressed = false;
     public bool start_pressed = false;
-
+    bool lap_increment = false;
     int prevLap = -1;
     StreamWriter writer;
 
@@ -274,7 +274,7 @@ public class ArcadeCar : MonoBehaviour
     public string resultText = "";
     //======================================================================================
 
-    int lapCount = 0;
+    public int lapCount = 0;
     int[] randomizedLapArray;// = { 0, 1, 2, 3, 4, 5, 6 };
 
     int[] Randomize(int[] arr)
@@ -1011,7 +1011,7 @@ public class ArcadeCar : MonoBehaviour
                 for (int i = 0; i < lapCount + 1; i++)
                 {
                     resultText += "Lap ";
-                    resultText += i.ToString();
+                    resultText += (i+1).ToString();
                     resultText += ": FPS = ";
                     resultText += FPSList[i].ToString();
                     resultText += ", Res = ";
@@ -1025,7 +1025,8 @@ public class ArcadeCar : MonoBehaviour
                     resultText += "\n";
 
                 }
-                lapCount++;
+                lap_increment = true;
+                //lapCount++;
                 dataFlag = true;
 
             }
@@ -1033,6 +1034,10 @@ public class ArcadeCar : MonoBehaviour
         }
         if (startPressed)
         {
+            if(lap_increment){
+                lapCount++;
+                lap_increment = false;
+            }
             enableFinishFlag = true;
             FINISH_LINE_FLAG = false;
             time = 0;
