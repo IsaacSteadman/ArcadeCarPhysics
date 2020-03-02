@@ -299,18 +299,20 @@ public class ArcadeCar : MonoBehaviour
         {
             switch (randomizedLapArray[lapCount])
             {
-                //fps
+                //control
                 case 0:
+                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
+                    break;
+
+                //fps
+                case 1:
                     fps = 10; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
-                case 1:
+                case 2:
                     fps = 15; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
-                case 2:
-                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0;
-                    break;
                 case 3:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
+                    fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 4:
                     fps = 60; resolutionMultiple = 80; q_len = 1; fps_var = 0;
@@ -322,49 +324,40 @@ public class ArcadeCar : MonoBehaviour
                     fps = 30; resolutionMultiple = 20; q_len = 1; fps_var = 0;
                     break;
                 case 6:
-                    fps = 30; resolutionMultiple = 40; q_len = 1; fps_var = 0;
+                    fps = 30; resolutionMultiple = 40; q_len = 1; fps_var = 0; //
                     break;
                 case 7:
-                    fps = 30; resolutionMultiple = 60; q_len = 1; fps_var = 0;
+                    fps = 30; resolutionMultiple = 60; q_len = 1; fps_var = 0; // 960x540
                     break;
                 case 8:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
-                    break;
-                case 9:
                     fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1280x720
                     break;
 
                 //latency
-                case 10:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
-                    break;
-                case 11:
+                case 9:
                     fps = 30; resolutionMultiple = 80; q_len = 5; fps_var = 0;
                     break;
-                case 12:
+                case 10:
                     fps = 30; resolutionMultiple = 80; q_len = 10; fps_var = 0;
                     break;
-                case 13:
+                case 11:
                     fps = 30; resolutionMultiple = 80; q_len = 15; fps_var = 0;
                     break;
-                case 14:
+                case 12:
                     fps = 30; resolutionMultiple = 80; q_len = 20; fps_var = 0;
                     break;
 
                 //stability
-                case 15:
-                    fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 0;
-                    break;
-                case 16:
+                case 13:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 7;
                     break;
-                case 17:
+                case 14:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 10;
                     break;
-                case 18:
+                case 15:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 12;
                     break;
-                case 19:
+                case 16:
                     fps = 30; resolutionMultiple = 80; q_len = 1; fps_var = 15;
                     break;
 
@@ -379,7 +372,7 @@ public class ArcadeCar : MonoBehaviour
                 initLog();
                 if (writer != null)
                 {
-                    writer.WriteLine(string.Format("Reset (LAP {4}) fps = {0}; resolutionMultiple = {1}, q_len = {2}, fps_var = {3}", fps, resolutionMultiple, q_len, fps_var, lapCount));
+                    writer.WriteLine(string.Format("Reset (LAP {4}) fps = {0}; resolutionMultiple = {1}, q_len = {2}, fps_var = {3}", fps, resolutionMultiple, q_len, fps_var, lapCount+1));
                     writer.Flush();
                 }
                 else
@@ -637,7 +630,7 @@ public class ArcadeCar : MonoBehaviour
     void Start()
     {
         Screen.SetResolution(1280, 720, true);
-        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+        int[] tempArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
         randomizedLapArray = Randomize(tempArray);
         style.normal.textColor = Color.red;
 
