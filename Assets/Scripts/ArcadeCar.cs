@@ -27,7 +27,8 @@ public class ArcadeCar : MonoBehaviour
     public bool start_pressed = false;
     bool lap_increment = false;
     int prevLap = -1;
-    StreamWriter writer;
+    public StreamWriter writer;
+    public PostGameSurvey postGameSurvey;
 
 
 
@@ -395,7 +396,7 @@ public class ArcadeCar : MonoBehaviour
 
     }
 
-    void initLog()
+    public void initLog()
     {
         if (writer == null)
         {
@@ -1027,18 +1028,10 @@ public class ArcadeCar : MonoBehaviour
         }
         if (startPressed)
         {
-            if(lap_increment){
-                lapCount++;
-                lap_increment = false;
+            if (!postGameSurvey.showing)
+            {
+                postGameSurvey.show();
             }
-            enableFinishFlag = true;
-            FINISH_LINE_FLAG = false;
-            time = 0;
-            startGame = true;
-            startRace = false;
-            Reset(new Vector3(0f, 0f, 0f), true);
-            //position = new Vector3(361, 4, -95);
-            //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
         }
         //======================================================================================
 
@@ -1145,6 +1138,20 @@ public class ArcadeCar : MonoBehaviour
 
             axles[0].steerAngle = ang;
         }
+    }
+    public void donePostGameSurvey()
+    {
+        lapCount++;
+        lap_increment = false;
+        enableFinishFlag = true;
+        FINISH_LINE_FLAG = false;
+        time = 0;
+        startGame = true;
+        startRace = false;
+        Reset(new Vector3(0f, 0f, 0f), true);
+        postGameSurvey.hide();
+        //position = new Vector3(361, 4, -95);
+        //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
     }
 
     void Update()
