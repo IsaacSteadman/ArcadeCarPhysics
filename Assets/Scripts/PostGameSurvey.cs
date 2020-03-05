@@ -16,6 +16,7 @@ public class PostGameSurvey : MonoBehaviour
     GameObject qtext;
     ArcadeCar car;
     public bool showing = true;
+    public bool doneSurvey = false;
     ToggleGroup toggle_group;
     GameObject panel;
     // Use this for initialization
@@ -67,7 +68,7 @@ public class PostGameSurvey : MonoBehaviour
         if (qi >= questions.Length)
         {
             qi = 0;
-            car.donePostGameSurvey();
+            doneSurvey = true;
         }
         car.initLog();
         car.writer.WriteLine(dataRecord);
