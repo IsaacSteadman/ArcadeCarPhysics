@@ -7,12 +7,18 @@ using System.IO;
 public class PostGameSurvey : MonoBehaviour
 {
     private String[] questions = {
-        "How would you rate the overall quality of the game (i.e. graphics, smoothness, responsiveness, etc.)?",
-        "How would you rate your personal, overall gameplay experience?",
-        "How would you rate this game's graphical resolution?",
-        "How would you rate this game's smoothness (affected by frames per second)?",
-        "How would you rate this game's responsiveness to user input (aka your actions and controls)?",
-        "How frustrated were you with the gameplay due to the game's quality/performance?"
+        "How would you rate the overall quality of the game (i.e. graphics, smoothness, responsiveness, etc.)? " +
+            "[0 - Terrible; 10 - Awesome]",
+        "How would you rate your personal, overall gameplay experience? " +
+            "[0 - Terrible; 10 - Awesome]",
+        "How would you rate this game's graphical resolution? " +
+            "[0 - Terrible; 10 - Awesome]",
+        "How would you rate this game's smoothness (affected by frames per second)? " +
+            "[0 - Terrible; 10 - Awesome]",
+        "How would you rate this game's responsiveness to user input (aka your actions and controls)? " +
+            "[0 - Terrible; 10 - Awesome]",
+        "How frustrated were you with the gameplay due to the game's quality/performance? " +
+            "[0 - Not at all; 10 - Extremely]"
     };
     int qi = 0;
     int prev_qi = -1;
@@ -48,6 +54,7 @@ public class PostGameSurvey : MonoBehaviour
     {
         showing = true;
         panel.SetActive(true);
+        toggle_group.SetAllTogglesOff();
         clearError();
         prev_qi = -1;
         qi = 0;

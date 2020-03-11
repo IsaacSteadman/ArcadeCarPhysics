@@ -1055,6 +1055,7 @@ public class ArcadeCar : MonoBehaviour
             }
             if (postGameSurvey.doneSurvey && postGameSurvey.notErrorYet)
             {
+                Debug.Log("hello survey before");
                 if (wwwPostGame == null)
                 {
                     String postData = "{\"surveyData\": " + postGameSurvey.surveyData + ", \"parameters\": {" + string.Format("\"lapNumber\": {4}, \"fps\": {0}, \"resolutionMultiple\": {1}, \"q_len\": {2}, \"fps_var\": {3}", fps, resolutionMultiple, q_len, fps_var, lapCount + 1) + "},";
@@ -1062,6 +1063,7 @@ public class ArcadeCar : MonoBehaviour
                     initLog();
                     writer.WriteLine(postData);
                     writer.Flush();
+                    Debug.Log("surveyData = " + postGameSurvey.surveyData);
                     if (postGameSurvey.surveyData.Length > 0)
                     {
                         UnityWebRequest www = UnityWebRequest.Put("https://isaacsteadman.com/arcade-survey/survey", postData);
@@ -1077,7 +1079,6 @@ public class ArcadeCar : MonoBehaviour
                     {
                         postGameSurvey.show();
                         postGameSurvey.setError(wwwPostGame.error);
-                        wwwPostGame = null;
                     }
                     else
                     {
@@ -1086,6 +1087,7 @@ public class ArcadeCar : MonoBehaviour
                         //position = new Vector3(361, 4, -95);
                         //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
                     }
+                    wwwPostGame = null;
                 }
             }
         }
