@@ -1,0 +1,1 @@
+{"serverendpoint":"https://web.gamebench.net/v1/sessions/sync","emailaddress":"briantsang98@gmail.com","needInstallation":false,"installationPrompted":true,"useFPS":1,"usePower":0,"sdkEnable":true,"sdkAPIControlEnable":false}
