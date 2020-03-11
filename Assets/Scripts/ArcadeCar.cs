@@ -30,6 +30,7 @@ public class ArcadeCar : MonoBehaviour
     int prevLap = -1;
     public StreamWriter writer;
     public PostGameSurvey postGameSurvey;
+    UnityWebRequest wwwPostGame;
     bool prevStartPressed = false;
     Guid sessionUuid = System.Guid.NewGuid();
 
@@ -1046,38 +1047,46 @@ public class ArcadeCar : MonoBehaviour
                     }
                     else
                     {
-                        postGameSurvey.doneSurvey = true;
+                        startNewLap();
                     }
                     Debug.Log("hello end");
                 }
                 // Debug.Log("Start is pressed");
             }
-            if (postGameSurvey.doneSurvey)
+            if (postGameSurvey.doneSurvey && postGameSurvey.notErrorYet)
             {
-                String postData = "{\"surveyData\": " + postGameSurvey.surveyData + ", \"parameters\": {" + string.Format("\"lapNumber\": {4}, \"fps\": {0}, \"resolutionMultiple\": {1}, \"q_len\": {2}, \"fps_var\": {3}", fps, resolutionMultiple, q_len, fps_var, lapCount + 1) + "},";
-                postData += "\"systemInfo\": {" + string.Format("\"deviceType\": \"{0}\", \"deviceModel\": \"{1}\", \"deviceUniqueIdentifier\": \"{2}\", \"operatingSystem\": \"{3}\", \"processorType\": \"{4}\"", ("" + SystemInfo.deviceType).Replace("\"", "\\\""), ("" + SystemInfo.deviceModel).Replace("\"", "\\\""), ("" + SystemInfo.deviceUniqueIdentifier).Replace("\"", "\\\""), ("" + SystemInfo.operatingSystem).Replace("\"", "\\\""), ("" + SystemInfo.processorType).Replace("\"", "\\\"")) + "}, \"uuid\": \"" + sessionUuid + "\"}";
-                initLog();
-                writer.WriteLine(postData);
-                writer.Flush();
-                if (postGameSurvey.surveyData.Length > 0)
+                if (wwwPostGame == null)
                 {
-                    UnityWebRequest www = UnityWebRequest.Put("https://isaacsteadman.com/arcade-survey/survey", postData);
-                    www.SetRequestHeader("Accept", "application/json");
-                    www.SetRequestHeader("Content-Type", "application/json");
-                    www.Send();
+                    String postData = "{\"surveyData\": " + postGameSurvey.surveyData + ", \"parameters\": {" + string.Format("\"lapNumber\": {4}, \"fps\": {0}, \"resolutionMultiple\": {1}, \"q_len\": {2}, \"fps_var\": {3}", fps, resolutionMultiple, q_len, fps_var, lapCount + 1) + "},";
+                    postData += "\"systemInfo\": {" + string.Format("\"deviceType\": \"{0}\", \"deviceModel\": \"{1}\", \"deviceUniqueIdentifier\": \"{2}\", \"operatingSystem\": \"{3}\", \"processorType\": \"{4}\"", ("" + SystemInfo.deviceType).Replace("\"", "\\\""), ("" + SystemInfo.deviceModel).Replace("\"", "\\\""), ("" + SystemInfo.deviceUniqueIdentifier).Replace("\"", "\\\""), ("" + SystemInfo.operatingSystem).Replace("\"", "\\\""), ("" + SystemInfo.processorType).Replace("\"", "\\\"")) + "}, \"uuid\": \"" + sessionUuid + "\"}";
+                    initLog();
+                    writer.WriteLine(postData);
+                    writer.Flush();
+                    if (postGameSurvey.surveyData.Length > 0)
+                    {
+                        UnityWebRequest www = UnityWebRequest.Put("https://isaacsteadman.com/arcade-survey/survey", postData);
+                        www.SetRequestHeader("Accept", "application/json");
+                        www.SetRequestHeader("Content-Type", "application/json");
+                        www.Send();
+                        wwwPostGame = www;
+                    }
                 }
-                postGameSurvey.doneSurvey = false;
-                lapCount++;
-                lap_increment = false;
-                enableFinishFlag = true;
-                FINISH_LINE_FLAG = false;
-                time = 0;
-                startGame = true;
-                startRace = false;
-                Reset(new Vector3(0f, 0f, 0f), true);
-                postGameSurvey.hide();
-                //position = new Vector3(361, 4, -95);
-                //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+                else if (wwwPostGame.isDone)
+                {
+                    if (wwwPostGame.isNetworkError || wwwPostGame.isHttpError)
+                    {
+                        postGameSurvey.show();
+                        postGameSurvey.setError(wwwPostGame.error);
+                        wwwPostGame = null;
+                    }
+                    else
+                    {
+                        startNewLap();
+                        postGameSurvey.hide();
+                        //position = new Vector3(361, 4, -95);
+                        //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+                    }
+                }
             }
         }
         //======================================================================================
@@ -1186,6 +1195,19 @@ public class ArcadeCar : MonoBehaviour
             axles[0].steerAngle = ang;
         }
         prevStartPressed = startPressed;
+    }
+
+    void startNewLap()
+    {
+        postGameSurvey.doneSurvey = false;
+        lapCount++;
+        lap_increment = false;
+        enableFinishFlag = true;
+        FINISH_LINE_FLAG = false;
+        time = 0;
+        startGame = true;
+        startRace = false;
+        Reset(new Vector3(0f, 0f, 0f), true);
     }
 
     void Update()

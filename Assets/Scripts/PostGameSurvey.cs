@@ -16,10 +16,11 @@ public class PostGameSurvey : MonoBehaviour
     };
     int qi = 0;
     int prev_qi = -1;
-    GameObject qtext;
+    GameObject qtext, etext, ebtn;
     ArcadeCar car;
     public bool showing = true;
     public bool doneSurvey = false;
+    public bool notErrorYet = true;
     ToggleGroup toggle_group;
     GameObject panel;
     public String surveyData = "";
@@ -27,6 +28,8 @@ public class PostGameSurvey : MonoBehaviour
     void Start()
     {
         qtext = GameObject.Find("PostSurveyQText");
+        etext = GameObject.Find("PostSurveyEText");
+        ebtn = GameObject.Find("PostSurveyRetry");
         panel = GameObject.Find("Panel (Post-Game Survey)");
         car = GameObject.Find("Car").GetComponent<ArcadeCar>();
         car.postGameSurvey = this;
@@ -38,12 +41,14 @@ public class PostGameSurvey : MonoBehaviour
     {
         showing = false;
         panel.SetActive(false);
+        clearError();
     }
 
     public void show()
     {
         showing = true;
         panel.SetActive(true);
+        clearError();
         prev_qi = -1;
         qi = 0;
         surveyData = "";
@@ -62,6 +67,21 @@ public class PostGameSurvey : MonoBehaviour
             pos1 = btnName.Length;
         }
         return btnName.Substring(pos + 1, pos1 - (pos + 1));
+    }
+
+    public void setError(String error)
+    {
+        notErrorYet = false;
+        etext.GetComponent<UnityEngine.UI.Text>().text = error;
+        etext.SetActive(true);
+        // ebtn.SetActive(true);
+    }
+
+    public void clearError()
+    {
+        notErrorYet = true;
+        etext.SetActive(false);
+        ebtn.SetActive(false);
     }
 
     public void nextAction()
