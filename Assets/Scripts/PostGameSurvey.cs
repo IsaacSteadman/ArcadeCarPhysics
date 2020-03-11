@@ -8,8 +8,11 @@ public class PostGameSurvey : MonoBehaviour
 {
     private String[] questions = {
         "How would you rate the overall quality of the game (i.e. graphics, smoothness, responsiveness, etc.)?",
-        "Some other questions?",
-        "More questions?"
+        "How would you rate your personal, overall gameplay experience?",
+        "How would you rate this game's graphical resolution?",
+        "How would you rate this game's smoothness (affected by frames per second)?",
+        "How would you rate this game's responsiveness to user input (aka your actions and controls)?",
+        "How frustrated were you with the gameplay due to the game's quality/performance?"
     };
     int qi = 0;
     int prev_qi = -1;
@@ -19,6 +22,7 @@ public class PostGameSurvey : MonoBehaviour
     public bool doneSurvey = false;
     ToggleGroup toggle_group;
     GameObject panel;
+    public String surveyData = "";
     // Use this for initialization
     void Start()
     {
@@ -42,6 +46,22 @@ public class PostGameSurvey : MonoBehaviour
         panel.SetActive(true);
         prev_qi = -1;
         qi = 0;
+        surveyData = "";
+    }
+
+    static String getIdButtonName(String btnName)
+    {
+        int pos = btnName.IndexOf('(');
+        if (pos < 0)
+        {
+            return "";
+        }
+        int pos1 = btnName.IndexOf(')', pos);
+        if (pos1 < 0)
+        {
+            pos1 = btnName.Length;
+        }
+        return btnName.Substring(pos + 1, pos1 - (pos + 1));
     }
 
     public void nextAction()
@@ -51,27 +71,36 @@ public class PostGameSurvey : MonoBehaviour
             return;
         }
         bool first = true;
-        String dataRecord = "Question " + qi + " responses: ";
+        String arrRecord = "";
         foreach (Toggle t in toggle_group.ActiveToggles())
         {
-            if (first)
+            String id = getIdButtonName(t.gameObject.name);
+            if (arrRecord.Length > 0)
             {
-                first = false;
+                arrRecord += ", ";
             }
-            else
-            {
-                dataRecord += ", ";
-            }
-            dataRecord += t.gameObject.name;
+            arrRecord += "\"" + id.Replace("\"", "\\\"") + "\"";
         }
+        String dataRecord = "\"Question_" + qi + "\": [" + arrRecord + "]";
+        if (surveyData.Length > 0)
+        {
+            surveyData += ", ";
+        }
+        else
+        {
+            surveyData = "{";
+        }
+        surveyData += dataRecord;
         ++qi;
         if (qi >= questions.Length)
         {
             qi = 0;
             doneSurvey = true;
+            surveyData += "}";
+        } else
+        {
+            toggle_group.SetAllTogglesOff();
         }
-        car.initLog();
-        car.writer.WriteLine(dataRecord);
     }
 
     // Update is called once per frame

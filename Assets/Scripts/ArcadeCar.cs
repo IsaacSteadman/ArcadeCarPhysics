@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using System.IO;
 
 public class ArcadeCar : MonoBehaviour
@@ -29,6 +30,8 @@ public class ArcadeCar : MonoBehaviour
     int prevLap = -1;
     public StreamWriter writer;
     public PostGameSurvey postGameSurvey;
+    bool prevStartPressed = false;
+    Guid sessionUuid = System.Guid.NewGuid();
 
 
 
@@ -378,7 +381,7 @@ public class ArcadeCar : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Could not writer to the writer");
+                    // Debug.Log("Could not writer to the writer");
                 }
             }
         }
@@ -403,7 +406,7 @@ public class ArcadeCar : MonoBehaviour
             try
             {
                 String settingsLogPath = Application.persistentDataPath + "/settingsLog.txt";
-                Debug.Log("logging path: " + settingsLogPath);
+                // Debug.Log("logging path: " + settingsLogPath);
                 writer = new StreamWriter(settingsLogPath, true);
                 writer.WriteLine("".PadLeft(80, '='));
                 writer.WriteLine("Starting a new Log");
@@ -411,7 +414,7 @@ public class ArcadeCar : MonoBehaviour
             }
             catch (Exception exc)
             {
-                Debug.Log(exc.StackTrace);
+                // Debug.Log(exc.StackTrace);
             }
         }
     }
@@ -625,7 +628,7 @@ public class ArcadeCar : MonoBehaviour
             axles[axleIndex].steerAngle = 0.0f;
         }
 
-        Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
+        // Debug.Log(string.Format("Reset {0}, {1}, {2}, Rot {3}", position.x, position.y, position.z, yaw));
     }
 
     void Start()
@@ -748,7 +751,7 @@ public class ArcadeCar : MonoBehaviour
 
         if (debugDraw)
         {
-            Debug.Log("Max speed reached!");
+            // Debug.Log("Max speed reached!");
         }
 
         float _desiredSpeed = accCurve.keys[numKeys - 1].value;
@@ -885,7 +888,7 @@ public class ArcadeCar : MonoBehaviour
 
             int shakiness = Math.Max(1, Math.Min(60, (int)normalRandom(fps, fps_var)));
             Application.targetFrameRate = shakiness;            // stability shakiness
-            Debug.Log("shakiness = " + shakiness);
+            // Debug.Log("shakiness = " + shakiness);
 
             Touch[] myTouches = Input.touches;
         }
@@ -931,7 +934,7 @@ public class ArcadeCar : MonoBehaviour
             //============================================================
 
 
-            Debug.Log("Reset pressed");
+            // Debug.Log("Reset pressed");
             Ray resetRay = new Ray();
 
             // trace top-down
@@ -1028,16 +1031,41 @@ public class ArcadeCar : MonoBehaviour
         }
         if (postGameSurvey != null)
         {
-            if (startPressed)
+            if (prevStartPressed != startPressed && !startPressed)
             {
                 if (!postGameSurvey.showing)
                 {
-                    postGameSurvey.show();
+                    Debug.Log("hello start");
+                    GameObject go = GameObject.Find("Button (Start)");
+                    Debug.Log("hello go" + go);
+                    StartButton sb = go.GetComponent<StartButton>();
+                    Debug.Log("hello mid");
+                    if (sb.changeToTakeSurvey())
+                    {
+                        postGameSurvey.show();
+                    }
+                    else
+                    {
+                        postGameSurvey.doneSurvey = true;
+                    }
+                    Debug.Log("hello end");
                 }
-                Debug.Log("Start is pressed");
+                // Debug.Log("Start is pressed");
             }
             if (postGameSurvey.doneSurvey)
             {
+                String postData = "{\"surveyData\": " + postGameSurvey.surveyData + ", \"parameters\": {" + string.Format("\"lapNumber\": {4}, \"fps\": {0}, \"resolutionMultiple\": {1}, \"q_len\": {2}, \"fps_var\": {3}", fps, resolutionMultiple, q_len, fps_var, lapCount + 1) + "},";
+                postData += "\"systemInfo\": {" + string.Format("\"deviceType\": \"{0}\", \"deviceModel\": \"{1}\", \"deviceUniqueIdentifier\": \"{2}\", \"operatingSystem\": \"{3}\", \"processorType\": \"{4}\"", ("" + SystemInfo.deviceType).Replace("\"", "\\\""), ("" + SystemInfo.deviceModel).Replace("\"", "\\\""), ("" + SystemInfo.deviceUniqueIdentifier).Replace("\"", "\\\""), ("" + SystemInfo.operatingSystem).Replace("\"", "\\\""), ("" + SystemInfo.processorType).Replace("\"", "\\\"")) + "}, \"uuid\": \"" + sessionUuid + "\"}";
+                initLog();
+                writer.WriteLine(postData);
+                writer.Flush();
+                if (postGameSurvey.surveyData.Length > 0)
+                {
+                    UnityWebRequest www = UnityWebRequest.Put("https://isaacsteadman.com/arcade-survey/survey", postData);
+                    www.SetRequestHeader("Accept", "application/json");
+                    www.SetRequestHeader("Content-Type", "application/json");
+                    www.Send();
+                }
                 postGameSurvey.doneSurvey = false;
                 lapCount++;
                 lap_increment = false;
@@ -1157,6 +1185,7 @@ public class ArcadeCar : MonoBehaviour
 
             axles[0].steerAngle = ang;
         }
+        prevStartPressed = startPressed;
     }
 
     void Update()
@@ -1389,9 +1418,9 @@ public class ArcadeCar : MonoBehaviour
         //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\nBest score: " + formatTime(bestScore0()), timerStyle);
         //GUI.Box(new Rect(30.0f, 150.0f, 150, 130), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);"====== Scoreboard ======\n" + top5ScoresString, timerStyle);
         float screenHeight = Screen.height;
-        Debug.Log(screenHeight);
+        // Debug.Log(screenHeight);
         float screenWidth = Screen.width;
-        Debug.Log(screenWidth);
+        // Debug.Log(screenWidth);
         //GUI.Box(new Rect(screenWidth * (0.75f), screenHeight * (0.333f), screenWidth / (6.0f), screenHeight / 3), "====== Scoreboard ======\n" + top5ScoresString, timerStyle);
         //GUI.Box(new Rect(screenWidth * (0.666f), screenHeight * (0.666f), screenWidth / (6.0f), screenHeight / 3), resultText, timerStyle);
         //====================================================================================================
@@ -1698,7 +1727,7 @@ public class ArcadeCar : MonoBehaviour
         /*
         if (slipperyK < 0.99f)
         {
-            Debug.Log(string.Format("Slippery {0:F2}", slipperyK));
+            // Debug.Log(string.Format("Slippery {0:F2}", slipperyK));
         }
         */
 
@@ -1830,7 +1859,7 @@ public class ArcadeCar : MonoBehaviour
 
         if (axles.Length != 2)
         {
-            Debug.LogWarning("Ackermann work only for 2 axle vehicles.");
+            // Debug.LogWarning("Ackermann work only for 2 axle vehicles.");
             return;
         }
 
@@ -1839,7 +1868,7 @@ public class ArcadeCar : MonoBehaviour
 
         if (Mathf.Abs(rearAxle.steerAngle) > 0.0001f)
         {
-            Debug.LogWarning("Ackermann work only for vehicles with forward steering axle.");
+            // Debug.LogWarning("Ackermann work only for vehicles with forward steering axle.");
             return;
         }
 
