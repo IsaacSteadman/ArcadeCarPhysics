@@ -311,13 +311,13 @@ public class ArcadeCar : MonoBehaviour
 
                 //fps
                 case 1:
-                    fps = 10; resolutionMultiple = 80; q_len = 1; fps_var = 0;
-                    break;
-                case 2:
                     fps = 15; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
-                case 3:
+                case 2:
                     fps = 20; resolutionMultiple = 80; q_len = 1; fps_var = 0;
+                    break;
+                case 3:
+                    fps = 25; resolutionMultiple = 80; q_len = 1; fps_var = 0;
                     break;
                 case 4:
                     fps = 60; resolutionMultiple = 80; q_len = 1; fps_var = 0;
@@ -326,16 +326,16 @@ public class ArcadeCar : MonoBehaviour
 
                 //resolution
                 case 5:
-                    fps = 30; resolutionMultiple = 20; q_len = 1; fps_var = 0;
+                    fps = 30; resolutionMultiple = 40; q_len = 1; fps_var = 0; // 640x360
                     break;
                 case 6:
-                    fps = 30; resolutionMultiple = 40; q_len = 1; fps_var = 0; //
+                    fps = 30; resolutionMultiple = 50; q_len = 1; fps_var = 0; // 800x450
                     break;
                 case 7:
                     fps = 30; resolutionMultiple = 60; q_len = 1; fps_var = 0; // 960x540
                     break;
                 case 8:
-                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1280x720
+                    fps = 30; resolutionMultiple = 120; q_len = 1; fps_var = 0; // 1920x1080
                     break;
 
                 //latency
