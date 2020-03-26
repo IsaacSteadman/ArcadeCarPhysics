@@ -27,11 +27,12 @@ public class ArcadeCar : MonoBehaviour
     public bool reset_pressed = false;
     public bool start_pressed = false;
     bool lap_increment = false;
-    int prevLap = -1;
+    int prevLap = -10;      //initialized later before startNewLap is called in Update Input (~1049)
     public StreamWriter writer;
     public PostGameSurvey postGameSurvey;
     UnityWebRequest wwwPostGame;
     bool prevStartPressed = false;
+    bool isDoneSurveys = false;
     Guid sessionUuid = System.Guid.NewGuid();
 
 
@@ -279,7 +280,7 @@ public class ArcadeCar : MonoBehaviour
     public string resultText = "";
     //======================================================================================
 
-    public int lapCount = 0;
+    public int lapCount = -10;      //initialized later before startNewLap is called in Update Input (~1049)
     int[] randomizedLapArray;// = { 0, 1, 2, 3, 4, 5, 6 };
 
     int[] Randomize(int[] arr)
@@ -1041,13 +1042,17 @@ public class ArcadeCar : MonoBehaviour
                     Debug.Log("hello go" + go);
                     StartButton sb = go.GetComponent<StartButton>();
                     Debug.Log("hello mid");
-                    if (sb.changeToTakeSurvey())
+                    if (isDoneSurveys) {
+                    }
+                    else if (sb.changeToTakeSurvey())
                     {
                         postGameSurvey.show();
-                    }
-                    else
-                    {
+                    } else {
+                        Debug.Log("lap out a");
+                        prevLap = -1;
+                        lapCount = -1;
                         startNewLap();
+                        Debug.Log("lap out b");
                     }
                     Debug.Log("hello end");
                 }
@@ -1082,7 +1087,9 @@ public class ArcadeCar : MonoBehaviour
                     }
                     else
                     {
+                        Debug.Log("lap out 2 a");
                         startNewLap();
+                        Debug.Log("lap out 2 b");
                         postGameSurvey.hide();
                         //position = new Vector3(361, 4, -95);
                         //transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
@@ -1199,10 +1206,20 @@ public class ArcadeCar : MonoBehaviour
         prevStartPressed = startPressed;
     }
 
-    void startNewLap()
+    void startNewLap(bool doIncrement=true)
     {
+        Debug.Log("lap in a");
         postGameSurvey.doneSurvey = false;
-        lapCount++;
+        Debug.Log("line 1208 increment lapCount");
+        if (doIncrement) {
+            lapCount++;
+            if (lapCount >= randomizedLapArray.Length) {
+                Debug.Log("Yo, Finished surveys");
+                lapCount = 0;
+                prevLap = -1;
+                isDoneSurveys = true;
+            }
+        }
         lap_increment = false;
         enableFinishFlag = true;
         FINISH_LINE_FLAG = false;
@@ -1210,6 +1227,7 @@ public class ArcadeCar : MonoBehaviour
         startGame = true;
         startRace = false;
         Reset(new Vector3(0f, 0f, 0f), true);
+        Debug.Log("lap in b");
     }
 
     void Update()
@@ -1412,7 +1430,8 @@ public class ArcadeCar : MonoBehaviour
         }
         else if (FINISH_LINE_FLAG == false & rageQuitFlag == true & startRace == true & start_pressed == true)
         {
-            lapCount++;
+            Debug.Log("line 1419 was increment lapCount");
+            // lapCount++;
             startGame = false;
             startRace = false;
             rageQuitFlag = false;
